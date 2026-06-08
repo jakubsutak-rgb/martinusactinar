@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Martinusáčtinár</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#1B4FDB;--brand-light:#EEF2FF;--brand-mid:#3B6AEF;
+  --ink:#111827;--ink2:#374151;--ink3:#6B7280;--ink4:#9CA3AF;
+  --surf:#FFFFFF;--surf2:#F9FAFB;--surf3:#F3F4F6;
+  --bdr:#E5E7EB;--bdr2:#D1D5DB;
+  --ok:#059669;--ok-bg:#ECFDF5;--err:#DC2626;--err-bg:#FEF2F2;
+  --r:10px;--rl:16px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shm:0 4px 12px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
+}
+@media(prefers-color-scheme:dark){:root{
+  --brand:#6B8FFF;--brand-light:#1a2040;--brand-mid:#5B7FEF;
+  --ink:#F9FAFB;--ink2:#E5E7EB;--ink3:#9CA3AF;--ink4:#6B7280;
+  --surf:#111827;--surf2:#1F2937;--surf3:#374151;
+  --bdr:#374151;--bdr2:#4B5563;
+}}
+html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(--surf2);color:var(--ink);font-size:15px;line-height:1.6}
+
+/* AUTH */
+#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.auth-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:3rem 2.5rem;width:100%;max-width:420px;box-shadow:var(--shm)}
+.auth-logo{font-family:'DM Serif Display',serif;font-size:28px;color:var(--brand);margin-bottom:.25rem;display:flex;align-items:center;gap:10px}
+.auth-tag{color:var(--ink3);font-size:13px;margin-bottom:2.5rem}
+.auth-label{display:block;font-size:13px;font-weight:500;color:var(--ink2);margin-bottom:6px}
+.auth-input{width:100%;padding:10px 14px;border:1px solid var(--bdr2);border-radius:var(--r);font-size:14px;font-family:inherit;background:var(--surf);color:var(--ink);outline:none;transition:border-color .15s}
+.auth-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(107,143,255,.15)}
+.auth-hint{font-size:12px;color:var(--ink4);margin-top:5px}
+.auth-err{background:var(--err-bg);color:var(--err);font-size:13px;padding:10px 14px;border-radius:var(--r);margin-top:1rem;display:none}
+.btn-primary{width:100%;padding:11px 20px;background:var(--brand);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:1.5rem;transition:opacity .15s}
+.btn-primary:hover{opacity:.9}
+
+/* APP */
+#app-screen{display:none;height:100vh;flex-direction:column}
+.topbar{background:var(--surf);border-bottom:1px solid var(--bdr);padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-brand{font-family:'DM Serif Display',serif;font-size:20px;color:var(--brand);display:flex;align-items:center;gap:8px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--brand-light);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500}
+.uname{font-size:13px;color:var(--ink2)}
+.btn-logout{background:none;border:1px solid var(--bdr);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--ink3);cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-logout:hover{border-color:var(--bdr2);color:var(--ink)}
+
+/* LAYOUT */
+.main{display:grid;grid-template-columns:280px 1fr;flex:1;min-height:0;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden}
+.sb-head{padding:1rem 1rem .75rem;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.sb-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink4);margin-bottom:8px}
+.btn-new{width:100%;padding:9px 14px;background:var(--brand-light);color:var(--brand);border:1px solid transparent;border-radius:var(--r);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;text-align:left;display:flex;align-items:center;gap:8px;transition:all .15s}
+.btn-new:hover{background:var(--brand);color:#fff}
+.hist-list{flex:1;overflow-y:auto;padding:.5rem}
+.hist-empty{padding:2rem 1rem;text-align:center;color:var(--ink4);font-size:13px;font-style:italic}
+.hist-item{padding:10px 12px;border-radius:var(--r);cursor:pointer;transition:background .1s}
+.hist-item:hover{background:var(--surf2)}
+.hist-item.active{background:var(--brand-light)}
+.hist-fmt{font-size:11px;font-weight:500;color:var(--brand);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.hist-topic{font-size:13px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-date{font-size:11px;color:var(--ink4);margin-top:2px}
+
+/* CONTENT */
+.content{display:flex;flex-direction:column;overflow:hidden}
+.scroll{flex:1;overflow-y:auto;padding:2rem}
+
+/* FORM */
+.form-panel{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:1.75rem;max-width:760px;margin:0 auto 1.5rem;box-shadow:var(--sh)}
+.fp-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:.25rem}
+.fp-sub{font-size:13px;color:var(--ink3);margin-bottom:1.5rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg.full{grid-column:1/-1}
+.flabel{font-size:12px;font-weight:500;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
+.fctl{padding:9px 12px;border:1px solid var(--bdr2);border-radius:var(--r);font-size:14px;font-family:inherit;background:var(--surf);color:var(--ink);outline:none;transition:border-color .15s;resize:vertical}
+.fctl:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(107,143,255,.12)}
+.fmt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:.5rem}
+.fmt-chip{padding:8px 6px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;font-weight:500;color:var(--ink3);background:var(--surf);cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px;user-select:none}
+.fmt-chip:hover,.fmt-chip.sel{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+.chip-ico{font-size:18px}
+.chip-lbl{font-size:11px;line-height:1.2}
+
+/* FILE UPLOAD */
+.upload-zone{border:1.5px dashed var(--bdr2);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:10px;transition:border-color .15s,background .15s;cursor:pointer}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--brand);background:var(--brand-light)}
+.uz-top{display:flex;align-items:center;gap:10px}
+.uz-ico{font-size:20px;flex-shrink:0}
+.uz-txt{flex:1}
+.uz-title{font-size:13px;font-weight:500;color:var(--ink2)}
+.uz-hint{font-size:11px;color:var(--ink4);margin-top:1px}
+.btn-browse{padding:5px 14px;border:1px solid var(--bdr2);border-radius:8px;font-size:12px;font-weight:500;color:var(--brand);background:var(--surf);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.btn-browse:hover{border-color:var(--brand);background:var(--brand-light)}
+.file-list{display:flex;flex-direction:column;gap:6px}
+.file-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--surf2);border:1px solid var(--bdr);border-radius:8px;font-size:13px}
+.fi-ico{font-size:15px;flex-shrink:0}
+.fi-name{flex:1;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-status{font-size:11px;color:var(--ink4);flex-shrink:0}
+.fi-status.ready{color:var(--ok)}
+.fi-status.error{color:var(--err)}
+.fi-rm{background:none;border:none;cursor:pointer;color:var(--ink4);font-size:16px;padding:0 2px;line-height:1;flex-shrink:0;transition:color .1s;font-family:inherit}
+.fi-rm:hover{color:var(--err)}
+
+.btn-generate{width:100%;padding:13px 20px;background:var(--brand);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:500;font-family:'DM Serif Display',serif;cursor:pointer;margin-top:1.25rem;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-generate:hover{opacity:.9}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+
+/* OUTPUT */
+.out-panel{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);max-width:760px;margin:0 auto;box-shadow:var(--sh);overflow:hidden;display:none}
+.out-head{padding:1rem 1.5rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:var(--surf2)}
+.out-meta{display:flex;align-items:center;gap:8px}
+.out-badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;background:var(--brand-light);color:var(--brand);text-transform:uppercase;letter-spacing:.06em}
+.out-topic{font-size:13px;color:var(--ink3)}
+.out-actions{display:flex;gap:8px}
+.btn-act{padding:6px 14px;border:1px solid var(--bdr2);border-radius:8px;font-size:12px;font-weight:500;color:var(--ink2);background:var(--surf);cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:5px}
+.btn-act:hover{background:var(--surf2);border-color:var(--brand);color:var(--brand)}
+.out-body{padding:1.5rem;min-height:120px}
+.out-text{font-size:15px;line-height:1.8;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+
+/* REFINE */
+.refine-bar{padding:1rem 1.5rem;border-top:1px solid var(--bdr);background:var(--surf2);display:none}
+.refine-lbl{font-size:12px;font-weight:500;color:var(--ink3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.qchip{padding:4px 12px;border:1px solid var(--bdr);border-radius:20px;font-size:12px;color:var(--ink3);background:var(--surf);cursor:pointer;transition:all .15s;user-select:none}
+.qchip:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
+.refine-row{display:flex;gap:8px}
+.refine-in{flex:1;padding:9px 12px;border:1px solid var(--bdr2);border-radius:var(--r);font-size:14px;font-family:inherit;background:var(--surf);color:var(--ink);outline:none;transition:border-color .15s}
+.refine-in:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(107,143,255,.12)}
+.btn-refine{padding:9px 18px;background:var(--brand);color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;white-space:nowrap;transition:opacity .15s}
+.btn-refine:hover{opacity:.9}
+.btn-refine:disabled{opacity:.5;cursor:not-allowed}
+
+/* LOADING */
+.loading{display:flex;flex-direction:column;align-items:center;padding:3rem 2rem;gap:1rem;color:var(--ink3);font-size:14px}
+.dots{display:flex;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--brand);opacity:.3;animation:pulse 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--ink);color:#fff;padding:10px 18px;border-radius:var(--r);font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:1000}
+.toast.show{opacity:1}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:10px}
+</style>
+</head>
+<body>
+
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">📚 Martinusáčtinár</div>
+    <p class="auth-tag">Copywritingový nástroj pre Martinus tím</p>
+    <label class="auth-label" for="email-in">Firemný e-mail</label>
+    <input class="auth-input" id="email-in" type="email" placeholder="meno.priezvisko@martinus.sk" autocomplete="email">
+    <p class="auth-hint">Prístup len pre e-maily s doménou @martinus.sk</p>
+    <div class="auth-err" id="auth-err">Prístup povolený iba pre @martinus.sk e-maily.</div>
+    <button class="btn-primary" id="btn-login">Vstúpiť do nástroja →</button>
+  </div>
+</div>
+
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-brand">📚 Martinusáčtinár</div>
+    <div class="topbar-right">
+      <div class="avatar" id="avatar">MM</div>
+      <span class="uname" id="uname">meno</span>
+      <button class="btn-logout" id="btn-logout">Odhlásiť sa</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="sidebar">
+      <div class="sb-head">
+        <div class="sb-title">História textov</div>
+        <button class="btn-new" id="btn-new">✦ Nový text</button>
+      </div>
+      <div class="hist-list" id="hist-list">
+        <div class="hist-empty">Zatiaľ žiadne texty.<br>Vytvor prvý! ✨</div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="scroll" id="scroll">
+
+        <div class="form-panel" id="form-panel">
+          <div class="fp-title">Nový text v martinusáčtine</div>
+          <p class="fp-sub">Vyplň formulár a nástroj vytvorí text presne v duchu Martinusu.</p>
+
+          <div class="fg" style="margin-bottom:1rem">
+            <span class="flabel">Formát textu</span>
+            <div class="fmt-grid" id="fmt-grid">
+              <div class="fmt-chip sel" data-val="blog"><span class="chip-ico">✍️</span><span class="chip-lbl">Blog / článok</span></div>
+              <div class="fmt-chip" data-val="banner"><span class="chip-ico">🎯</span><span class="chip-lbl">Bannerový text</span></div>
+              <div class="fmt-chip" data-val="email"><span class="chip-ico">✉️</span><span class="chip-lbl">E-mail / newsletter</span></div>
+              <div class="fmt-chip" data-val="social"><span class="chip-ico">📱</span><span class="chip-lbl">Social media post</span></div>
+              <div class="fmt-chip" data-val="story"><span class="chip-ico">⚡</span><span class="chip-lbl">Story</span></div>
+              <div class="fmt-chip" data-val="plakat"><span class="chip-ico">🗒️</span><span class="chip-lbl">Plagát / in-store</span></div>
+              <div class="fmt-chip" data-val="meta"><span class="chip-ico">🔍</span><span class="chip-lbl">Meta / SEO text</span></div>
+              <div class="fmt-chip" data-val="gads"><span class="chip-ico">📢</span><span class="chip-lbl">Google Ads</span></div>
+              <div class="fmt-chip" data-val="produkt"><span class="chip-ico">📖</span><span class="chip-lbl">Produktový popis</span></div>
+              <div class="fmt-chip" data-val="tlacova"><span class="chip-ico">📰</span><span class="chip-lbl">Tlačová správa</span></div>
+              <div class="fmt-chip" data-val="push"><span class="chip-ico">🔔</span><span class="chip-lbl">Push notifikácia</span></div>
+              <div class="fmt-chip" data-val="iny"><span class="chip-ico">✨</span><span class="chip-lbl">Iný formát</span></div>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="fg full">
+              <label class="flabel" for="topic-in">Téma a kontext kampane</label>
+              <textarea class="fctl" id="topic-in" rows="3" placeholder="Napr.: Nový Dominik Dán – Podaj prst. Slávime 20 rokov autora, je to 40. kniha, máme špeciálnu limitovanú edíciu..."></textarea>
+            </div>
+            <div class="fg">
+              <label class="flabel" for="audience-in">Cieľová skupina</label>
+              <select class="fctl" id="audience-in">
+                <option value="citatelia">Čitatelia všeobecne</option>
+                <option value="zeny">Ženy</option>
+                <option value="muzi">Muži</option>
+                <option value="deti">Deti a rodičia</option>
+                <option value="mamicky">Mamičky</option>
+                <option value="nerozhodnuti">Nerozhodnutí čitatelia</option>
+                <option value="darcovacie">Darujúci (kto hľadá darček)</option>
+                <option value="mladez">Mladí dospelí 18–30</option>
+                <option value="senori">50+ čitatelia</option>
+                <option value="fanusikovia">Fanúšikovia žánru/autora</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="flabel" for="length-in">Dĺžka textu</label>
+              <select class="fctl" id="length-in">
+                <option value="kratky">Krátky (1–3 vety)</option>
+                <option value="stredny" selected>Stredný (1–3 odseky)</option>
+                <option value="dlhy">Dlhý (celý text / blog)</option>
+                <option value="vlastna">Vlastná dĺžka…</option>
+              </select>
+            </div>
+            <div class="fg full" id="custom-len-grp" style="display:none">
+              <label class="flabel" for="custom-len">Upresni dĺžku</label>
+              <input class="fctl" type="text" id="custom-len" placeholder="Napr.: 3 headliny + subheadline, max 40 znakov">
+            </div>
+            <div class="fg full">
+              <label class="flabel" for="extra-in">Dodatočné inštrukcie (voliteľné)</label>
+              <input class="fctl" type="text" id="extra-in" placeholder="Napr.: Pridaj CTA tlačidlo, použi slovnú hračku s názvom knihy...">
+            </div>
+            <div class="fg full">
+              <span class="flabel">Doplňujúce dokumenty (voliteľné)</span>
+              <div class="upload-zone" id="upload-zone">
+                <div class="uz-top">
+                  <span class="uz-ico">📎</span>
+                  <div class="uz-txt">
+                    <div class="uz-title">Prihoď brief, podklady alebo iný kontext</div>
+                    <div class="uz-hint">PDF, DOCX, TXT, MD · max 5 súborov · max 5 MB každý</div>
+                  </div>
+                  <button class="btn-browse" id="btn-browse" type="button">Vybrať súbory</button>
+                </div>
+                <div class="file-list" id="file-list"></div>
+              </div>
+              <input type="file" id="file-in" style="display:none" multiple accept=".pdf,.doc,.docx,.txt,.md">
+            </div>
+          </div>
+
+          <button class="btn-generate" id="btn-generate">✦ Generovať v martinusáčtine</button>
+        </div>
+
+        <div class="out-panel" id="out-panel">
+          <div class="out-head">
+            <div class="out-meta">
+              <div class="out-badge" id="out-badge">Blog</div>
+              <span class="out-topic" id="out-topic"></span>
+            </div>
+            <div class="out-actions">
+              <button class="btn-act" id="btn-copy">📋 Kopírovať</button>
+              <button class="btn-act" id="btn-regen">↺ Regenerovať</button>
+              <button class="btn-act" id="btn-edit">✎ Upraviť zadanie</button>
+            </div>
+          </div>
+          <div class="out-body" id="out-body">
+            <div class="loading" id="loading">
+              <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+              <span id="load-msg">Knižní škriatkovia píšu text…</span>
+            </div>
+            <div class="out-text" id="out-text" style="display:none"></div>
+          </div>
+          <div class="refine-bar" id="refine-bar">
+            <div class="refine-lbl">Upraviť alebo zmeniť text</div>
+            <div class="qchips">
+              <span class="qchip" data-q="Urob ho kratší">Kratší</span>
+              <span class="qchip" data-q="Urob ho dlhší a bohatší">Dlhší</span>
+              <span class="qchip" data-q="Pridaj viac humoru a slovné hračky">Viac humoru</span>
+              <span class="qchip" data-q="Urob ho viac emocionálny a srdečný">Viac emócie</span>
+              <span class="qchip" data-q="Použi silnejšie CTA">Silnejšie CTA</span>
+              <span class="qchip" data-q="Navrhni 3 alternatívne varianty">3 varianty</span>
+              <span class="qchip" data-q="Uprav pre Instagram Stories formát">Stories formát</span>
+              <span class="qchip" data-q="Dodaj knižné narážky a metafory">Knižné narážky</span>
+            </div>
+            <div class="refine-row">
+              <input class="refine-in" id="refine-in" type="text" placeholder="Napr.: Zmeň tón na viac seriózny, pridaj zmienku o limitovanej edícii…">
+              <button class="btn-refine" id="btn-refine">Upraviť →</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+var SYSTEM_PROMPT = 'Si skúsený copywriter pre kníhkupectvo Martinus. Tvojou úlohou je písať texty v štýle martinusáčtiny – jedinečného jazyka značky Martinus.\n\nCHARAKTER KOMUNIKÁCIE:\nMartinus je ako dobrý kamarát, s ktorým sa najradšej rozprávaš o knihách. Je inteligentný, srdečný, spoľahlivý, má rád humor, slovné hračky a knižné odkazy.\n\nKomunikácia je: ľudská a prirodzená, pozitívna a láskavá, hravá ale nie infantilná, inteligentná ale nie elitárska, sebavedomá ale nie arogantná, profesionálna ale nie úradnícka.\n\nJAZYK – uprednostňuj martinusácke výrazy:\n- čitateľ, čitateľka (NIE zákazník)\n- Martinusák, Martinusáčka (vždy s veľkým M)\n- knižní škriatkovia (fiktívni pomocníci na sklade)\n- kníhkaviareň (kníhkupectvo s kaviarňou)\n- kníhkupectvo (bez kaviarne)\n- kniha-káva-koláč / 3K\n- Dočítania (pozdrav)\n- So želaním dobrej knihy\n\nHUMOR: Používaj slovné hračky, jemnú iróniu, knižné odkazy, metafory spojené s čítaním. Vyhýbaj sa zosmiešňovaniu ľudí a vulgárnosti.\n\nŠTÝL:\n- Kreatívnejšie formulácie namiesto strohých oznámení\n- Nadpisy bez bodiek\n- Žiadne viacnásobné výkričníky, Caps Lock, historické V (Vám)\n- Štandardne vykaj\n- Nedeľ knihy na mužské a ženské\n- Emotikony len v sociálnych sieťach a mailov predmete\n- Smajlík vždy s nosom :-)\n- Martinusáci s veľkým M\n\nPRE PLAGÁTY: Len jeden nadpis bez subheadline, max 40 znakov, ideál 30-35, uprednostňuj emóciu pred opisom.\n\nPRE E-MAILY: Oslovenie Milí čitatelia/čitateľky alebo Milý čitateľ. Zakončenie: So želaním dobrej knihy po vašom boku / váš Martinus.\n\nHODNOTY: Komunikácia podporuje lásku ku knihám, čitateľstvo, zvedavosť, rešpekt k ľuďom, optimizmus, človečinu.\n\nZmysel existencie Martinusu: Spájame ľudí s knihami, aby v sebe rozvíjali to dobré.';
+
+var FMT_LABELS = {blog:'Blog / článok',banner:'Banner',email:'E-mail',social:'Social post',story:'Story',plakat:'Plagát',meta:'Meta text',gads:'Google Ads',produkt:'Produktový popis',tlacova:'Tlačová správa',push:'Push notifikácia',iny:'Iný formát'};
+var FMT_HINTS = {
+  blog:'Napíš celý blogový článok s úvodom, jadrom a záverom. Štýl je martinusácky – hravý, srdečný, s knižnými narážkami.',
+  banner:'Vytvor 2–3 varianty bannerového textu: headline (max 40 znakov) + voliteľný subheadline + CTA text.',
+  email:'Napíš celý e-mail s predmetom, preview textom, telom mailu a záverom v martinusáckom štýle.',
+  social:'Napíš post na Facebook/Instagram – hravý, s emóciou, vhodný počet hashtagov, emotikony OK.',
+  story:'Napíš sériu 3 stories (Story 1, 2, 3) – každá krátky text. Prípadne poll otázku.',
+  plakat:'Napíš IBA jeden nadpis (max 40 znakov, ideál 30–35). Žiadny subheadline.',
+  meta:'Napíš meta title (max 60 znakov) a meta description (max 155 znakov).',
+  gads:'Napíš Google Ads: 3 Headlines (max 30 znakov každý) + 2 Descriptions (max 90 znakov každý).',
+  produkt:'Napíš krátky produktový popis (2–4 vety) v martinusáckom štýle – emócia, nie suchý popis.',
+  tlacova:'Napíš tlačovú správu: nadpis, perex, telo, citát, kontakt. Formálnejší, ale stále martinusácky.',
+  push:'Napíš push notifikáciu: title (max 50 znakov) + body (max 100 znakov). Krátke, úderné.',
+  iny:'Napíš text v martinusáckom štýle podľa zadania.'
+};
+var LOAD_MSGS = ['Knižní škriatkovia píšu text…','Hľadám správne slová v knižnici…','Miešam martinusáčtinu so slovnými hračkami…','Posledná úprava pred vydaním…'];
+var AUD_LABELS = {citatelia:'čitatelia všeobecne',zeny:'ženy',muzi:'muži',deti:'deti a rodičia',mamicky:'mamičky',nerozhodnuti:'nerozhodnutí čitatelia',darcovacie:'darujúci',mladez:'mladí dospelí 18–30',senori:'50+ čitatelia',fanusikovia:'fanúšikovia žánru/autora'};
+var LEN_LABELS = {kratky:'krátky (1–3 vety)',stredny:'stredný (1–3 odseky)',dlhy:'dlhý (celý text / blog)'};
+
+var selFmt = 'blog';
+var sessions = [];
+var curSession = null;
+var history = [];
+var busy = false;
+var docs = [];
+var curEmail = '';
+
+// ── HELPERS ──
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); },2500); }
+function skey(){ return 'mact_'+curEmail; }
+function save(){ try{ localStorage.setItem(skey(), JSON.stringify(sessions.slice(0,100))); }catch(e){} }
+function load(){ try{ var r=localStorage.getItem(skey()); sessions=r?JSON.parse(r):[]; }catch(e){ sessions=[]; } }
+
+// ── AUTH ──
+function doLogin(){
+  var email = document.getElementById('email-in').value.trim().toLowerCase();
+  var errEl = document.getElementById('auth-err');
+  if(!email.endsWith('@martinus.sk')){ errEl.style.display='block'; return; }
+  errEl.style.display='none';
+  curEmail = email;
+  var parts = email.split('@')[0].split('.');
+  var initials = parts.map(function(p){ return p[0]?p[0].toUpperCase():''; }).join('').slice(0,2);
+  var dname = parts.map(function(p){ return p.charAt(0).toUpperCase()+p.slice(1); }).join(' ');
+  document.getElementById('avatar').textContent = initials;
+  document.getElementById('uname').textContent = dname;
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'flex';
+  load();
+  renderHist();
+}
+
+function doLogout(){
+  curEmail=''; sessions=[]; curSession=null; history=[]; docs=[];
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  document.getElementById('email-in').value='';
+}
+
+// ── FORMAT CHIPS ──
+function selectFmt(chip){
+  document.querySelectorAll('.fmt-chip').forEach(function(c){ c.classList.remove('sel'); });
+  chip.classList.add('sel');
+  selFmt = chip.getAttribute('data-val');
+}
+
+// ── HISTORY ──
+function renderHist(){
+  var el = document.getElementById('hist-list');
+  if(!sessions.length){ el.innerHTML='<div class="hist-empty">Zatiaľ žiadne texty.<br>Vytvor prvý! ✨</div>'; return; }
+  el.innerHTML = sessions.map(function(s,i){
+    var active = curSession && curSession.id===s.id ? ' active':'';
+    return '<div class="hist-item'+active+'" data-idx="'+i+'">'
+      +'<div class="hist-fmt">'+esc(FMT_LABELS[s.fmt]||s.fmt)+'</div>'
+      +'<div class="hist-topic">'+esc(s.topic||'')+'</div>'
+      +'<div class="hist-date">'+new Date(s.at).toLocaleDateString('sk-SK',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'</div>'
+      +'</div>';
+  }).join('');
+  el.querySelectorAll('.hist-item').forEach(function(item){
+    item.addEventListener('click', function(){ loadSess(parseInt(this.getAttribute('data-idx'))); });
+  });
+}
+
+function loadSess(i){
+  var s=sessions[i]; curSession=s; history=s.hist?s.hist.slice():[]; selFmt=s.fmt;
+  document.querySelectorAll('.fmt-chip').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-val')===s.fmt); });
+  document.getElementById('topic-in').value=s.topic||'';
+  document.getElementById('audience-in').value=s.aud||'citatelia';
+  document.getElementById('length-in').value=s.len||'stredny';
+  document.getElementById('extra-in').value=s.extra||'';
+  document.getElementById('form-panel').style.display='none';
+  document.getElementById('out-panel').style.display='block';
+  document.getElementById('out-badge').textContent=FMT_LABELS[s.fmt]||s.fmt;
+  document.getElementById('out-topic').textContent=(s.topic||'').slice(0,60);
+  document.getElementById('loading').style.display='none';
+  document.getElementById('out-text').style.display='block';
+  document.getElementById('out-text').textContent=s.out||'';
+  document.getElementById('refine-bar').style.display='block';
+  renderHist();
+  document.getElementById('scroll').scrollTo(0,0);
+}
+
+function newSess(){
+  curSession=null; history=[]; docs=[];
+  selFmt='blog';
+  document.querySelectorAll('.fmt-chip').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-val')==='blog'); });
+  document.getElementById('topic-in').value='';
+  document.getElementById('extra-in').value='';
+  document.getElementById('out-panel').style.display='none';
+  document.getElementById('form-panel').style.display='block';
+  renderFileList();
+  renderHist();
+  document.getElementById('scroll').scrollTo(0,0);
+}
+
+// ── PROMPTS ──
+function buildPrompt(){
+  var topic=document.getElementById('topic-in').value.trim();
+  var aud=document.getElementById('audience-in').value;
+  var len=document.getElementById('length-in').value;
+  var clen=document.getElementById('custom-len').value.trim();
+  var extra=document.getElementById('extra-in').value.trim();
+  var lenLabel=len==='vlastna'?(clen||'vlastná dĺžka'):(LEN_LABELS[len]||len);
+  var p='Formát textu: '+(FMT_LABELS[selFmt]||selFmt)+'\n'
+    +'Téma a kontext: '+topic+'\n'
+    +'Cieľová skupina: '+(AUD_LABELS[aud]||aud)+'\n'
+    +'Požadovaná dĺžka: '+lenLabel+'\n'
+    +(extra?'Dodatočné inštrukcie: '+extra+'\n':'')
+    +'\nInštrukcie pre formát: '+(FMT_HINTS[selFmt]||'')+'\n'
+    +'\nNapíš text v martinusáčtine pre tento formát. Buď kreatívny, autentický a dodržuj všetky pravidlá martinusáčtiny.';
+  var docsCtx=getDocsCtx();
+  if(docsCtx) p+=docsCtx;
+  return p;
+}
+
+function getDocsCtx(){
+  var ready=docs.filter(function(d){ return d.status==='ready'&&d.text; });
+  if(!ready.length) return '';
+  return '\n\n--- DOPLŇUJÚCE DOKUMENTY ---\nNasledujúce dokumenty obsahujú dodatočný kontext, brief alebo podklady:\n\n'
+    +ready.map(function(d){ return '['+d.name+']\n'+d.text; }).join('\n\n---\n\n');
+}
+
+// ── GENERATE ──
+function generate(){
+  if(busy) return;
+  var topic=document.getElementById('topic-in').value.trim();
+  if(!topic){ toast('Zadaj tému textu!'); return; }
+  busy=true;
+  document.getElementById('btn-generate').disabled=true;
+  document.getElementById('form-panel').style.display='none';
+  document.getElementById('out-panel').style.display='block';
+  document.getElementById('loading').style.display='flex';
+  document.getElementById('out-text').style.display='none';
+  document.getElementById('refine-bar').style.display='none';
+  document.getElementById('out-badge').textContent=FMT_LABELS[selFmt]||selFmt;
+  document.getElementById('out-topic').textContent=topic.slice(0,60);
+  var mi=0;
+  var iv=setInterval(function(){ mi=(mi+1)%LOAD_MSGS.length; var e=document.getElementById('load-msg'); if(e) e.textContent=LOAD_MSGS[mi]; },1800);
+  history=[{role:'user',content:buildPrompt()}];
+  callAPI(history).then(function(result){
+    clearInterval(iv);
+    document.getElementById('loading').style.display='none';
+    document.getElementById('out-text').style.display='block';
+    document.getElementById('out-text').textContent=result;
+    document.getElementById('refine-bar').style.display='block';
+    history.push({role:'assistant',content:result});
+    var sd={id:Date.now().toString(),fmt:selFmt,topic:topic,aud:document.getElementById('audience-in').value,len:document.getElementById('length-in').value,extra:document.getElementById('extra-in').value.trim(),out:result,hist:history.slice(),at:new Date().toISOString()};
+    if(curSession){ var idx=sessions.findIndex(function(s){ return s.id===curSession.id; }); if(idx!==-1){ sessions[idx]=Object.assign({},sessions[idx],sd,{id:sessions[idx].id}); curSession=sessions[idx]; } }
+    else{ sessions.unshift(sd); curSession=sd; }
+    save(); renderHist();
+    busy=false; document.getElementById('btn-generate').disabled=false;
+    document.getElementById('scroll').scrollTo(0,9999);
+  });
+}
+
+function refine(){
+  if(busy) return;
+  var txt=document.getElementById('refine-in').value.trim();
+  if(!txt) return;
+  busy=true; document.getElementById('btn-refine').disabled=true;
+  history.push({role:'user',content:txt});
+  document.getElementById('refine-in').value='';
+  callAPI(history).then(function(result){
+    document.getElementById('out-text').textContent=result;
+    history.push({role:'assistant',content:result});
+    if(curSession){ var idx=sessions.findIndex(function(s){ return s.id===curSession.id; }); if(idx!==-1){ sessions[idx].out=result; sessions[idx].hist=history.slice(); curSession=sessions[idx]; save(); } }
+    busy=false; document.getElementById('btn-refine').disabled=false;
+    document.getElementById('scroll').scrollTo(0,9999);
+  });
+}
+
+function regen(){
+  if(busy) return;
+  history=history.length?[history[0]]:[];
+  if(!history.length){ history=[{role:'user',content:buildPrompt()}]; }
+  history.push({role:'user',content:'Vytvor nový variant tohto textu – iný prístup, iná slovná hračka alebo štruktúra, ale rovnaká téma a martinusácky štýl.'});
+  busy=true;
+  document.getElementById('loading').style.display='flex';
+  document.getElementById('out-text').style.display='none';
+  document.getElementById('refine-bar').style.display='none';
+  callAPI(history).then(function(result){
+    document.getElementById('loading').style.display='none';
+    document.getElementById('out-text').style.display='block';
+    document.getElementById('out-text').textContent=result;
+    document.getElementById('refine-bar').style.display='block';
+    history.push({role:'assistant',content:result});
+    if(curSession){ var idx=sessions.findIndex(function(s){ return s.id===curSession.id; }); if(idx!==-1){ sessions[idx].out=result; sessions[idx].hist=history.slice(); curSession=sessions[idx]; save(); } }
+    busy=false; document.getElementById('scroll').scrollTo(0,9999);
+  });
+}
+
+function editForm(){
+  document.getElementById('out-panel').style.display='none';
+  document.getElementById('form-panel').style.display='block';
+  document.getElementById('scroll').scrollTo(0,0);
+}
+
+function copyOut(){
+  var txt=document.getElementById('out-text').textContent;
+  if(navigator.clipboard){ navigator.clipboard.writeText(txt).then(function(){ toast('Skopírované! 📋'); }).catch(fallback); }
+  else { fallback(); }
+  function fallback(){ var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('Skopírované! 📋'); }
+}
+
+// ── API ──
+function callAPI(msgs){
+  return fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:SYSTEM_PROMPT,messages:msgs})
+  }).then(function(r){ return r.json(); }).then(function(d){
+    return (d.content||[]).filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text; }).join('')||'Nepodarilo sa získať text. Skús znova.';
+  }).catch(function(e){ return 'Chyba pripojenia: '+e.message; });
+}
+
+// ── FILES ──
+function fileIco(name){ var e=name.split('.').pop().toLowerCase(); return e==='pdf'?'📄':(e==='docx'||e==='doc'?'📝':'📃'); }
+
+function renderFileList(){
+  var el=document.getElementById('file-list');
+  if(!docs.length){ el.innerHTML=''; return; }
+  el.innerHTML=docs.map(function(d,i){
+    return '<div class="file-item">'
+      +'<span class="fi-ico">'+fileIco(d.name)+'</span>'
+      +'<span class="fi-name" title="'+esc(d.name)+'">'+esc(d.name)+'</span>'
+      +'<span class="fi-status '+d.status+'">'+(d.status==='ready'?'✓ Pripravený':d.status==='error'?'✗ Chyba':'Načítavam…')+'</span>'
+      +'<button class="fi-rm" data-i="'+i+'" title="Odstrániť">×</button>'
+      +'</div>';
+  }).join('');
+  el.querySelectorAll('.fi-rm').forEach(function(btn){
+    btn.addEventListener('click', function(e){ e.stopPropagation(); docs.splice(parseInt(this.getAttribute('data-i')),1); renderFileList(); });
+  });
+}
+
+function processFiles(files){
+  var allowed=['pdf','doc','docx','txt','md'];
+  Array.from(files).forEach(function(file){
+    if(docs.length>=5){ toast('Max 5 súborov naraz.'); return; }
+    var ext=file.name.split('.').pop().toLowerCase();
+    if(allowed.indexOf(ext)===-1){ toast('Nepodporovaný formát: .'+ext); return; }
+    if(file.size>5*1024*1024){ toast(file.name+' je príliš veľký (max 5 MB).'); return; }
+    if(docs.find(function(d){ return d.name===file.name; })) return;
+    var idx=docs.length;
+    docs.push({name:file.name,text:'',status:'loading'});
+    renderFileList();
+    extractText(file,ext).then(function(text){
+      docs[idx].text=text.trim().slice(0,15000);
+      docs[idx].status='ready';
+      renderFileList();
+    }).catch(function(){
+      docs[idx].status='error';
+      renderFileList();
+    });
+  });
+}
+
+function extractText(file,ext){
+  if(ext==='pdf') return extractPDF(file);
+  if(ext==='docx'||ext==='doc') return extractDOCX(file);
+  return file.text();
+}
+
+function extractPDF(file){
+  return file.arrayBuffer().then(function(ab){
+    var lib=window['pdfjs-dist/build/pdf']||window.pdfjsLib;
+    if(lib&&lib.GlobalWorkerOptions) lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    return lib.getDocument({data:ab}).promise;
+  }).then(function(pdf){
+    var pages=[]; for(var i=1;i<=Math.min(pdf.numPages,30);i++) pages.push(i);
+    return pages.reduce(function(p,i){ return p.then(function(txt){ return pdf.getPage(i).then(function(pg){ return pg.getTextContent(); }).then(function(c){ return txt+c.items.map(function(x){ return x.str; }).join(' ')+'\n'; }); }); }, Promise.resolve(''));
+  });
+}
+
+function extractDOCX(file){
+  return file.arrayBuffer().then(function(ab){ return mammoth.extractRawText({arrayBuffer:ab}); }).then(function(r){ return r.value; });
+}
+
+// ── EVENT LISTENERS ──
+document.getElementById('btn-login').addEventListener('click', doLogin);
+document.getElementById('email-in').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('btn-logout').addEventListener('click', doLogout);
+document.getElementById('btn-new').addEventListener('click', newSess);
+document.getElementById('btn-generate').addEventListener('click', generate);
+document.getElementById('btn-refine').addEventListener('click', refine);
+document.getElementById('btn-copy').addEventListener('click', copyOut);
+document.getElementById('btn-regen').addEventListener('click', regen);
+document.getElementById('btn-edit').addEventListener('click', editForm);
+document.getElementById('refine-in').addEventListener('keydown', function(e){ if(e.key==='Enter') refine(); });
+document.getElementById('length-in').addEventListener('change', function(){ document.getElementById('custom-len-grp').style.display=this.value==='vlastna'?'block':'none'; });
+
+document.getElementById('btn-browse').addEventListener('click', function(e){ e.stopPropagation(); document.getElementById('file-in').click(); });
+document.getElementById('file-in').addEventListener('change', function(e){ processFiles(e.target.files); e.target.value=''; });
+
+var uz=document.getElementById('upload-zone');
+uz.addEventListener('click', function(){ document.getElementById('file-in').click(); });
+uz.addEventListener('dragover', function(e){ e.preventDefault(); uz.classList.add('drag'); });
+uz.addEventListener('dragleave', function(){ uz.classList.remove('drag'); });
+uz.addEventListener('drop', function(e){ e.preventDefault(); uz.classList.remove('drag'); processFiles(e.dataTransfer.files); });
+
+document.getElementById('fmt-grid').addEventListener('click', function(e){
+  var chip=e.target.closest('.fmt-chip');
+  if(chip) selectFmt(chip);
+});
+
+document.getElementById('hist-list').addEventListener('click', function(e){
+  var item=e.target.closest('.hist-item');
+  if(item) loadSess(parseInt(item.getAttribute('data-idx')));
+});
+
+document.querySelectorAll('.qchip').forEach(function(chip){
+  chip.addEventListener('click', function(){
+    document.getElementById('refine-in').value=this.getAttribute('data-q');
+    refine();
+  });
+});
+
+}); // end DOMContentLoaded
+</script>
+</body>
+</html>
