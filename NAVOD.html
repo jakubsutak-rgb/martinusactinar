@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Návod: Spustenie Martinusáčtinára</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#F9FAFB;color:#111827;font-size:16px;line-height:1.7}
+.wrap{max-width:820px;margin:0 auto;padding:3rem 1.5rem}
+h1{font-family:'DM Serif Display',serif;font-size:36px;color:#1B4FDB;margin-bottom:.5rem}
+.sub{color:#6B7280;font-size:16px;margin-bottom:3rem}
+.part{margin-bottom:3.5rem}
+.part-head{display:flex;align-items:center;gap:14px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid #E5E7EB}
+.part-num{width:44px;height:44px;border-radius:50%;background:#1B4FDB;color:#fff;font-family:'DM Serif Display',serif;font-size:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.part-title{font-family:'DM Serif Display',serif;font-size:24px;color:#111827}
+.part-sub{font-size:14px;color:#6B7280}
+.step{display:flex;gap:16px;margin-bottom:1.75rem}
+.step-num{width:28px;height:28px;border-radius:50%;background:#EEF2FF;color:#1B4FDB;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body{flex:1}
+.step-title{font-weight:600;font-size:16px;margin-bottom:6px;color:#111827}
+.step-desc{color:#374151;font-size:15px}
+.screen{background:#1e1e2e;border-radius:12px;padding:1.25rem 1.5rem;margin:12px 0;font-family:'Courier New',monospace;font-size:13px;color:#cdd6f4;line-height:1.6;position:relative;overflow:hidden}
+.screen::before{content:'● ● ●';position:absolute;top:10px;left:14px;color:#45475a;font-size:11px;letter-spacing:3px}
+.screen .code{padding-top:8px;display:block}
+.ui-box{background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:14px 18px;margin:12px 0;font-size:14px}
+.ui-row{display:flex;align-items:center;gap:10px;margin:6px 0}
+.btn-fake{display:inline-block;padding:6px 16px;border-radius:6px;font-size:13px;font-weight:500;cursor:default}
+.btn-blue{background:#1B4FDB;color:#fff}
+.btn-white{background:#fff;border:1px solid #D1D5DB;color:#374151}
+.btn-green{background:#059669;color:#fff}
+.input-fake{display:inline-block;padding:5px 12px;border:1px solid #D1D5DB;border-radius:6px;font-size:13px;color:#374151;background:#F9FAFB;font-family:monospace}
+.tip{background:#FFFBEB;border:1px solid #FCD34D;border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px;color:#92400E}
+.tip::before{content:'💡 ';font-style:normal}
+.warn{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px;color:#991B1B}
+.warn::before{content:'⚠️ ';font-style:normal}
+.ok{background:#ECFDF5;border:1px solid #6EE7B7;border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px;color:#065F46}
+.ok::before{content:'✅ ';font-style:normal}
+.arrow{color:#1B4FDB;font-weight:700}
+.highlight{background:#EEF2FF;padding:2px 7px;border-radius:4px;color:#1B4FDB;font-weight:500;font-size:14px}
+.divider{border:none;border-top:1px solid #E5E7EB;margin:2.5rem 0}
+.big-step{background:#fff;border:1px solid #E5E7EB;border-radius:14px;padding:1.5rem;margin-bottom:1rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.price-box{background:#EEF2FF;border:1px solid #C7D2FE;border-radius:10px;padding:1rem 1.25rem;margin:12px 0;font-size:14px}
+.price-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #C7D2FE}
+.price-row:last-child{border:none;font-weight:600;padding-top:8px}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.tag-blue{background:#EEF2FF;color:#1B4FDB}
+.tag-green{background:#ECFDF5;color:#059669}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>📚 Martinusáčtinár — návod na spustenie</h1>
+  <p class="sub">Krok za krokom, ako keby si mal 6 rokov. Žiadne technické skúsenosti nepotrebuješ.</p>
+
+  <div style="background:#fff;border:1px solid #E5E7EB;border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:3rem;font-size:15px">
+    <strong>Čo ťa čaká:</strong><br>
+    <span class="arrow">①</span> Získaš prístupový kód k AI (API kľúč) — trvá ~5 minút<br>
+    <span class="arrow">②</span> Nasadíš tool na Vercel (bezplatný hosting) — trvá ~5 minút<br>
+    <span class="arrow">③</span> Prepojíš jedno s druhým — trvá ~2 minúty<br>
+    <span class="arrow">④</span> Zdieľaš link kolegom — hotovo!
+  </div>
+
+  <!-- CAST 1 -->
+  <div class="part">
+    <div class="part-head">
+      <div class="part-num">1</div>
+      <div>
+        <div class="part-title">Získaj API kľúč (prístupový kód k AI)</div>
+        <div class="part-sub">Toto je ako elektrická prípojka — bez nej tool nefunguje. Zaregistruješ sa a zaplatíš malý kredit.</div>
+      </div>
+    </div>
+
+    <div class="big-step">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Otvor stránku Anthropic Console</div>
+          <div class="step-desc">V prehliadači (Chrome, Safari, Firefox — hocičom) otvor adresu:</div>
+          <div class="screen"><span class="code">https://console.anthropic.com</span></div>
+          <div class="tip">Anthropic je firma, ktorá vytvára AI model Claude — ten istý, ktorý generuje texty v našom tooli.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Klikni na "Sign up"</div>
+          <div class="step-desc">Na stránke uvidíš toto:</div>
+          <div class="ui-box">
+            <div style="font-size:20px;font-weight:700;margin-bottom:8px">Welcome to Claude</div>
+            <div style="margin-bottom:12px;color:#6B7280;font-size:13px">Sign in to your account or create a new one</div>
+            <div class="ui-row"><span class="btn-fake btn-blue">Continue with email</span></div>
+            <div class="ui-row" style="color:#6B7280;font-size:12px">— or —</div>
+            <div class="ui-row"><span class="btn-fake btn-white">Continue with Google</span></div>
+          </div>
+          <div class="tip">Odporúčam kliknúť <strong>Continue with Google</strong> a použiť firemný Google účet. Je to najrýchlejšie.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Dokonči registráciu</div>
+          <div class="step-desc">Zadaj meno, prijmi podmienky (klikni "I agree") a potvrď e-mail ak príde správa. Po registrácii ťa presmeruje na <strong>Dashboard</strong> — hlavnú stránku.</div>
+          <div class="ok">Ak vidíš nadpis "Anthropic Console" a v ľavom menu sú položky ako "API Keys", "Workspaces" — si na správnom mieste!</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Dobij kredit (min. $20)</div>
+          <div class="step-desc">Bez kreditu API kľúč nefunguje. V ľavom menu klikni na <span class="highlight">Billing</span>, potom <span class="highlight">Add credits</span>.</div>
+          <div class="ui-box">
+            <div style="margin-bottom:8px;font-size:13px;color:#6B7280">Billing → Credits</div>
+            <div class="ui-row">
+              <div style="flex:1">Current balance: <strong>$0.00</strong></div>
+              <span class="btn-fake btn-blue">Add credits</span>
+            </div>
+          </div>
+          <div class="step-desc" style="margin-top:8px">Zadaj čiastku <strong>$20</strong> a platobnú kartu. Toto je jednorazový kredit — neopakuje sa automaticky.</div>
+          <div class="price-box">
+            <div class="price-row"><span>Cena za 1 generovaný text (≈ 500 slov)</span><span>~$0.003</span></div>
+            <div class="price-row"><span>$20 kredit vydrží cca</span><span>6 000 textov</span></div>
+            <div class="price-row"><span>Pre tím 10 ľudí to stačí na</span><span>niekoľko mesiacov</span></div>
+          </div>
+          <div class="tip">Kredit sa míňa len keď tool skutočne niekto používa. Kým nič negenerujete, neklesá.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Vytvor API kľúč</div>
+          <div class="step-desc">V ľavom menu klikni na <span class="highlight">API Keys</span>. Uvidíš takúto stránku:</div>
+          <div class="ui-box">
+            <div style="font-size:16px;font-weight:600;margin-bottom:10px">API Keys</div>
+            <div style="color:#6B7280;font-size:13px;margin-bottom:12px">No API keys yet. Create one to get started.</div>
+            <span class="btn-fake btn-blue">+ Create Key</span>
+          </div>
+          <div class="step-desc" style="margin-top:8px">Klikni <span class="highlight">Create Key</span>. Objaví sa okno — do poľa "Name" napíš napríklad <strong>martinusactinar</strong> a klikni <span class="highlight">Create Key</span>.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Skopíruj a ulož kľúč — DÔLEŽITÉ!</div>
+          <div class="step-desc">Po kliknutí sa objaví kľúč. Vyzerá takto:</div>
+          <div class="screen"><span class="code">sk-ant-api03-xXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXxX</span></div>
+          <div class="warn">Tento kľúč sa zobrazí IBA RAZ. Skopíruj ho a ulož do bezpečného miesta (napr. do poznámkového bloku alebo 1Password). Ak ho zatvoriš bez skopírovania, musíš vytvoriť nový.</div>
+          <div class="step-desc">Klikni na ikonu kopírovania vedľa kľúča, potom <span class="highlight">Done</span>.</div>
+          <div class="ok">API kľúč máš! Teraz ideme na hosting.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAST 2 -->
+  <div class="part">
+    <div class="part-head">
+      <div class="part-num">2</div>
+      <div>
+        <div class="part-title">Nasaď tool na Vercel</div>
+        <div class="part-sub">Vercel je bezplatný hosting. Vezme kód z GitHubu a spraví z neho živú webstránku.</div>
+      </div>
+    </div>
+
+    <div class="big-step">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Zlúč vetvu do main na GitHube</div>
+          <div class="step-desc">Otvor repozitár <span class="highlight">jakubsutak-rgb/martinusactinar</span> na GitHub.com. Uvidíš žltý banner:</div>
+          <div class="ui-box">
+            <div style="background:#FFF8DC;border:1px solid #e6d272;border-radius:6px;padding:10px 14px;font-size:13px">
+              <strong>claude/hopeful-darwin-4btey0</strong> had recent pushes
+              <span class="btn-fake btn-blue" style="margin-left:10px;padding:4px 12px;font-size:12px">Compare &amp; pull request</span>
+            </div>
+          </div>
+          <div class="step-desc" style="margin-top:8px">Klikni <span class="highlight">Compare &amp; pull request</span> → potom <span class="highlight">Create pull request</span> → potom <span class="highlight">Merge pull request</span> → <span class="highlight">Confirm merge</span>.</div>
+          <div class="ok">Kód je teraz v hlavnej vetve (main). Môžeme nasadiť.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Otvor Vercel</div>
+          <div class="step-desc">V novej záložke prehliadača otvor:</div>
+          <div class="screen"><span class="code">https://vercel.com</span></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Zaregistruj sa cez GitHub</div>
+          <div class="step-desc">Na úvodnej stránke Vercelu klikni <span class="highlight">Sign Up</span>, potom vyber:</div>
+          <div class="ui-box">
+            <div class="ui-row"><span class="btn-fake btn-white">▶ Continue with GitHub</span></div>
+          </div>
+          <div class="step-desc">Prihlásiš sa rovnakým GitHub účtom, kde je repozitár <em>martinusactinar</em>. GitHub sa opýta "Authorize Vercel" — klikni <span class="highlight">Authorize</span>.</div>
+          <div class="tip">Registrácia na Verceli je zadarmo. Netreba kartu.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Pridaj nový projekt</div>
+          <div class="step-desc">Po prihlásení uvidíš Dashboard. Klikni na veľké tlačidlo:</div>
+          <div class="ui-box">
+            <span class="btn-fake btn-blue">+ Add New… → Project</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Vyber repozitár martinusactinar</div>
+          <div class="step-desc">Vercel zobrazí zoznam tvojich GitHub repozitárov. Nájdi <span class="highlight">martinusactinar</span> a klikni <span class="highlight">Import</span> vedľa neho.</div>
+          <div class="ui-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #E5E7EB">
+              <div>📁 <strong>jakubsutak-rgb/martinusactinar</strong></div>
+              <span class="btn-fake btn-blue">Import</span>
+            </div>
+          </div>
+          <div class="tip">Ak repozitár nevidíš, klikni "Adjust GitHub App Permissions" a povol prístup k tomuto repozitáru.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Konfiguruj projekt — zatiaľ NIČ nemeň</div>
+          <div class="step-desc">Objaví sa stránka "Configure Project". Všetky nastavenia nechaj tak ako sú. Teraz NEKLIKAJ "Deploy" — najprv treba pridať API kľúč!</div>
+          <div class="warn">Ak klikneš Deploy teraz bez API kľúča, tool sa síce nasadí, ale nebude generovať texty. Pokračuj krokom 7.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <div class="step-title">Pridaj API kľúč do Environment Variables</div>
+          <div class="step-desc">Na tej istej stránke "Configure Project" rozklikni sekciu <span class="highlight">Environment Variables</span> (klikni na jej nadpis). Zobrazí sa formulár:</div>
+          <div class="ui-box">
+            <div style="font-size:13px;font-weight:600;margin-bottom:8px">Environment Variables</div>
+            <div class="ui-row" style="flex-wrap:wrap;gap:8px">
+              <div style="flex:1;min-width:140px">
+                <div style="font-size:11px;color:#6B7280;margin-bottom:3px">Key</div>
+                <div class="input-fake">ANTHROPIC_API_KEY</div>
+              </div>
+              <div style="flex:2;min-width:200px">
+                <div style="font-size:11px;color:#6B7280;margin-bottom:3px">Value</div>
+                <div class="input-fake">sk-ant-api03-xXxXx… (sem vlož tvoj kľúč)</div>
+              </div>
+              <div style="align-self:flex-end">
+                <span class="btn-fake btn-white">Add</span>
+              </div>
+            </div>
+          </div>
+          <div class="step-desc" style="margin-top:8px">
+            Do poľa <strong>Key</strong> napíš presne toto (veľkými písmenami, pomlčky):<br>
+            <div class="screen"><span class="code">ANTHROPIC_API_KEY</span></div>
+            Do poľa <strong>Value</strong> vlož API kľúč, ktorý si skopíroval v Časti 1 (začína na <code>sk-ant-</code>).
+          </div>
+          <div class="step-desc">Klikni <span class="highlight">Add</span> a uvidíš, že kľúč sa pridal do zoznamu (hodnota bude skrytá hviezdičkami).</div>
+          <div class="ok">API kľúč je bezpečne uložený na serveri. Používatelia toolu ho nikdy neuvidia.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">8</div>
+        <div class="step-body">
+          <div class="step-title">Klikni Deploy!</div>
+          <div class="step-desc">Teraz klikni na veľké modré tlačidlo:</div>
+          <div class="ui-box">
+            <span class="btn-fake btn-blue" style="font-size:15px;padding:10px 24px">🚀 Deploy</span>
+          </div>
+          <div class="step-desc">Vercel začne buildovať a nasadzovať tool. Uvidíš animovaný progress. Trvá to asi <strong>60–90 sekúnd</strong>.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">9</div>
+        <div class="step-body">
+          <div class="step-title">Hotovo — dostaneš link!</div>
+          <div class="step-desc">Keď nasadenie skončí, Vercel zobrazí konfetové animácie 🎉 a link:</div>
+          <div class="ui-box">
+            <div style="text-align:center;padding:1rem">
+              <div style="font-size:32px;margin-bottom:8px">🎉</div>
+              <div style="font-weight:700;font-size:18px;margin-bottom:8px">Congratulations!</div>
+              <div style="color:#6B7280;font-size:14px;margin-bottom:12px">Your project has been successfully deployed.</div>
+              <div style="color:#1B4FDB;font-size:15px;font-weight:500">martinusactinar.vercel.app</div>
+            </div>
+          </div>
+          <div class="ok">Tool je živý! Otvor link a skús sa prihlásiť tvojím @martinus.sk e-mailom.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAST 3 -->
+  <div class="part">
+    <div class="part-head">
+      <div class="part-num">3</div>
+      <div>
+        <div class="part-title">Zdieľaj s kolegmi</div>
+        <div class="part-sub">Stačí poslať jeden link. Nikto nič neinštaluje.</div>
+      </div>
+    </div>
+
+    <div class="big-step">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Skopíruj link a pošli ho</div>
+          <div class="step-desc">Link z Vercelu (napr. <span class="highlight">martinusactinar.vercel.app</span>) pošli kolegom cez Slack, Teams alebo e-mail.</div>
+          <div class="tip">Link môžeš neskôr zmeniť na vlastnú doménu, napr. <strong>copy.martinus.sk</strong> — ak to budeš chcieť, daj vedieť a poradím ako.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Kolegovia sa prihlásia svojím @martinus.sk e-mailom</div>
+          <div class="step-desc">Na úvodnej stránke zadajú firemný e-mail (napr. <em>jana.novakova@martinus.sk</em>) a kliknú "Vstúpiť do nástroja". Tool overí, že ide o @martinus.sk adresu — iné neprepustí.</div>
+          <div class="warn">Heslo sa nezadáva — tool overuje len doménu. Ak chcete v budúcnosti silnejšie overenie (napr. skutočné prihlásenie cez Google Workspace), daj vedieť.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Kolegovia môžu hneď generovať texty</div>
+          <div class="step-desc">Vyberú formát (blog, banner, story…), zadajú tému a zadanie, kliknú <strong>Generovať v martinusáčtine</strong> — a o pár sekúnd majú text.</div>
+          <div class="ok">Tool je hotový a v prevádzke. Netreba nič inštalovať, funguje v akomkoľvek prehliadači na počítači aj mobile.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="part">
+    <div class="part-head">
+      <div class="part-num">?</div>
+      <div>
+        <div class="part-title">Časté otázky</div>
+        <div class="part-sub">Čo ak niečo nejde alebo čo ďalej.</div>
+      </div>
+    </div>
+
+    <div class="big-step">
+      <div class="step">
+        <div class="step-num">Q</div>
+        <div class="step-body">
+          <div class="step-title">Koľko to bude stáť mesačne?</div>
+          <div class="step-desc">Záleží od intenzity používania. Orientačne:</div>
+          <div class="price-box">
+            <div class="price-row"><span>Hosting (Vercel)</span><span><strong>$0 / mesiac</strong></span></div>
+            <div class="price-row"><span>AI model (Claude Haiku)</span><span>~$0.003 / text</span></div>
+            <div class="price-row"><span>Pri 500 textoch / mesiac</span><span>~$1.50 / mesiac</span></div>
+            <div class="price-row"><span>Pri 2 000 textoch / mesiac</span><span>~$6 / mesiac</span></div>
+          </div>
+          <div class="tip">Kredit $20 vydrží tímu pravdepodobne niekoľko mesiacov. Keď sa minie, jednoducho dobiješ ďalší.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Q</div>
+        <div class="step-body">
+          <div class="step-title">Tool prestáva fungovať — čo sa stalo?</div>
+          <div class="step-desc">Najčastejšie príčiny:<br>
+          <strong>1.</strong> Minul sa kredit — skontroluj na console.anthropic.com → Billing<br>
+          <strong>2.</strong> API kľúč vypršal — vytvor nový v console.anthropic.com → API Keys a pridaj ho do Vercelu (Settings → Environment Variables → zmeň hodnotu → Redeploy)</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Q</div>
+        <div class="step-body">
+          <div class="step-title">Chcem vlastnú doménu (napr. copy.martinus.sk)</div>
+          <div class="step-desc">V Verceli: Settings → Domains → Add Domain → zadaj <em>copy.martinus.sk</em>. Vercel ti dá DNS záznamy, ktoré musí správca domény pridať do DNS nastavení Martinusu. Daj vedieť a pomôžem.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">Q</div>
+        <div class="step-body">
+          <div class="step-title">Chcem zmeniť alebo vylepšiť tool</div>
+          <div class="step-desc">Napíš mi čo chceš zmeniť — upravím kód, pushnem do GitHub a Vercel nasadí zmeny automaticky do ~1 minúty. Žiadna ďalšia práca z tvojej strany.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;color:#6B7280;font-size:14px;padding:2rem 0;border-top:1px solid #E5E7EB;margin-top:1rem">
+    So želaním dobrej knihy (a funkčného toolu) 📚
+  </div>
+
+</div>
+</body>
+</html>
