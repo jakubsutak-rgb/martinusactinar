@@ -10,7 +10,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --brand:#1B4FDB;--brand-light:#EEF2FF;--brand-mid:#3B6AEF;
+  --brand:#D22121;--brand-light:#FDECEA;--brand-mid:#E93227;
   --ink:#111827;--ink2:#374151;--ink3:#6B7280;--ink4:#9CA3AF;
   --surf:#FFFFFF;--surf2:#F9FAFB;--surf3:#F3F4F6;
   --bdr:#E5E7EB;--bdr2:#D1D5DB;
@@ -20,7 +20,7 @@
   --shm:0 4px 12px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
 }
 @media(prefers-color-scheme:dark){:root{
-  --brand:#6B8FFF;--brand-light:#1a2040;--brand-mid:#5B7FEF;
+  --brand:#E93227;--brand-light:#3a1010;--brand-mid:#D22121;
   --ink:#F9FAFB;--ink2:#E5E7EB;--ink3:#9CA3AF;--ink4:#6B7280;
   --surf:#111827;--surf2:#1F2937;--surf3:#374151;
   --bdr:#374151;--bdr2:#4B5563;
@@ -28,13 +28,13 @@
 html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(--surf2);color:var(--ink);font-size:15px;line-height:1.6}
 
 /* AUTH */
-#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+#auth-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(135deg,#FDECEA 0%,#FDDEC6 100%)}
 .auth-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:3rem 2.5rem;width:100%;max-width:420px;box-shadow:var(--shm)}
 .auth-logo{font-family:'DM Serif Display',serif;font-size:28px;color:var(--brand);margin-bottom:.25rem;display:flex;align-items:center;gap:10px}
 .auth-tag{color:var(--ink3);font-size:13px;margin-bottom:2.5rem}
 .auth-label{display:block;font-size:13px;font-weight:500;color:var(--ink2);margin-bottom:6px}
 .auth-input{width:100%;padding:10px 14px;border:1px solid var(--bdr2);border-radius:var(--r);font-size:14px;font-family:inherit;background:var(--surf);color:var(--ink);outline:none;transition:border-color .15s}
-.auth-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(107,143,255,.15)}
+.auth-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(210,33,33,.15)}
 .auth-hint{font-size:12px;color:var(--ink4);margin-top:5px}
 .auth-err{background:var(--err-bg);color:var(--err);font-size:13px;padding:10px 14px;border-radius:var(--r);margin-top:1rem;display:none}
 .btn-primary{width:100%;padding:11px 20px;background:var(--brand);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;margin-top:1.5rem;transition:opacity .15s}
@@ -81,8 +81,8 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
 .fg.full{grid-column:1/-1}
 .flabel{font-size:12px;font-weight:500;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em}
 .fctl{padding:9px 12px;border:1px solid var(--bdr2);border-radius:var(--r);font-size:14px;font-family:inherit;background:var(--surf);color:var(--ink);outline:none;transition:border-color .15s;resize:vertical}
-.fctl:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(107,143,255,.12)}
-.fmt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:.5rem}
+.fctl:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(210,33,33,.12)}
+.fmt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:.5rem}
 .fmt-chip{padding:8px 6px;border:1.5px solid var(--bdr);border-radius:var(--r);font-size:12px;font-weight:500;color:var(--ink3);background:var(--surf);cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px;user-select:none}
 .fmt-chip:hover,.fmt-chip.sel{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
 .chip-ico{font-size:18px}
@@ -132,7 +132,7 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
 .qchip:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-light)}
 .refine-row{display:flex;gap:8px}
 .refine-in{flex:1;padding:9px 12px;border:1px solid var(--bdr2);border-radius:var(--r);font-size:14px;font-family:inherit;background:var(--surf);color:var(--ink);outline:none;transition:border-color .15s}
-.refine-in:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(107,143,255,.12)}
+.refine-in:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(210,33,33,.12)}
 .btn-refine{padding:9px 18px;background:var(--brand);color:#fff;border:none;border-radius:var(--r);font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;white-space:nowrap;transition:opacity .15s}
 .btn-refine:hover{opacity:.9}
 .btn-refine:disabled{opacity:.5;cursor:not-allowed}
@@ -157,7 +157,13 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
 
 <div id="auth-screen">
   <div class="auth-card">
-    <div class="auth-logo">📚 Martinusáčtinár</div>
+    <div class="auth-logo">
+      <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="42" height="42" rx="10" fill="#D22121"/>
+        <text x="21" y="30" text-anchor="middle" font-family="Georgia,serif" font-size="26" font-weight="bold" fill="#FFFFFF">m</text>
+      </svg>
+      Martinusáčtinár
+    </div>
     <p class="auth-tag">Copywritingový nástroj pre Martinus tím</p>
     <label class="auth-label" for="email-in">Firemný e-mail</label>
     <input class="auth-input" id="email-in" type="email" placeholder="meno.priezvisko@martinus.sk" autocomplete="email">
@@ -169,7 +175,13 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
 
 <div id="app-screen">
   <div class="topbar">
-    <div class="topbar-brand">📚 Martinusáčtinár</div>
+    <div class="topbar-brand">
+      <svg width="28" height="28" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="flex-shrink:0">
+        <rect width="42" height="42" rx="10" fill="#D22121"/>
+        <text x="21" y="30" text-anchor="middle" font-family="Georgia,serif" font-size="26" font-weight="bold" fill="#FFFFFF">m</text>
+      </svg>
+      Martinusáčtinár
+    </div>
     <div class="topbar-right">
       <div class="avatar" id="avatar">MM</div>
       <span class="uname" id="uname">meno</span>
@@ -199,13 +211,15 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
               <div class="fmt-chip sel" data-val="blog"><span class="chip-ico">✍️</span><span class="chip-lbl">Blog / článok</span></div>
               <div class="fmt-chip" data-val="banner"><span class="chip-ico">🎯</span><span class="chip-lbl">Bannerový text</span></div>
               <div class="fmt-chip" data-val="email"><span class="chip-ico">✉️</span><span class="chip-lbl">E-mail / newsletter</span></div>
-              <div class="fmt-chip" data-val="social"><span class="chip-ico">📱</span><span class="chip-lbl">Social media post</span></div>
+              <div class="fmt-chip" data-val="social"><span class="chip-ico">📱</span><span class="chip-lbl">Social post (FB/IG)</span></div>
               <div class="fmt-chip" data-val="story"><span class="chip-ico">⚡</span><span class="chip-lbl">Story</span></div>
+              <div class="fmt-chip" data-val="carousel"><span class="chip-ico">🎠</span><span class="chip-lbl">Carousel</span></div>
               <div class="fmt-chip" data-val="plakat"><span class="chip-ico">🗒️</span><span class="chip-lbl">Plagát / in-store</span></div>
-              <div class="fmt-chip" data-val="meta"><span class="chip-ico">🔍</span><span class="chip-lbl">Meta / SEO text</span></div>
-              <div class="fmt-chip" data-val="gads"><span class="chip-ico">📢</span><span class="chip-lbl">Google Ads</span></div>
-              <div class="fmt-chip" data-val="produkt"><span class="chip-ico">📖</span><span class="chip-lbl">Produktový popis</span></div>
               <div class="fmt-chip" data-val="tlacova"><span class="chip-ico">📰</span><span class="chip-lbl">Tlačová správa</span></div>
+              <div class="fmt-chip" data-val="produkt"><span class="chip-ico">📖</span><span class="chip-lbl">Produktový popis</span></div>
+              <div class="fmt-chip" data-val="gads"><span class="chip-ico">📢</span><span class="chip-lbl">Google Ads</span></div>
+              <div class="fmt-chip" data-val="metaads"><span class="chip-ico">🎯</span><span class="chip-lbl">Meta Ads</span></div>
+              <div class="fmt-chip" data-val="seo"><span class="chip-ico">🔍</span><span class="chip-lbl">SEO meta text</span></div>
               <div class="fmt-chip" data-val="push"><span class="chip-ico">🔔</span><span class="chip-lbl">Push notifikácia</span></div>
               <div class="fmt-chip" data-val="iny"><span class="chip-ico">✨</span><span class="chip-lbl">Iný formát</span></div>
             </div>
@@ -232,21 +246,32 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
               </select>
             </div>
             <div class="fg">
+              <label class="flabel" for="tone-in">Tón textu</label>
+              <select class="fctl" id="tone-in">
+                <option value="martinusacky">Martinusácky (štandardný)</option>
+                <option value="hravy">Hravý a vtipný</option>
+                <option value="ludsky">Ľudský a srdečný</option>
+                <option value="vazny">Vážny a informatívny</option>
+                <option value="motivacny">Motivačný a inšpiratívny</option>
+                <option value="nostalgicky">Nostalgický a emotívny</option>
+              </select>
+            </div>
+            <div class="fg">
               <label class="flabel" for="length-in">Dĺžka textu</label>
               <select class="fctl" id="length-in">
                 <option value="kratky">Krátky (1–3 vety)</option>
                 <option value="stredny" selected>Stredný (1–3 odseky)</option>
                 <option value="dlhy">Dlhý (celý text / blog)</option>
-                <option value="vlastna">Vlastná dĺžka…</option>
+                <option value="vlastna">Zadám počet znakov…</option>
               </select>
             </div>
-            <div class="fg full" id="custom-len-grp" style="display:none">
-              <label class="flabel" for="custom-len">Upresni dĺžku</label>
-              <input class="fctl" type="text" id="custom-len" placeholder="Napr.: 3 headliny + subheadline, max 40 znakov">
+            <div class="fg" id="custom-len-grp" style="display:none">
+              <label class="flabel" for="custom-len">Počet znakov / slov</label>
+              <input class="fctl" type="text" id="custom-len" placeholder="Napr.: max 150 znakov, alebo cca 300 slov">
             </div>
             <div class="fg full">
               <label class="flabel" for="extra-in">Dodatočné inštrukcie (voliteľné)</label>
-              <input class="fctl" type="text" id="extra-in" placeholder="Napr.: Pridaj CTA tlačidlo, použi slovnú hračku s názvom knihy...">
+              <input class="fctl" type="text" id="extra-in" placeholder="Napr.: Pridaj CTA, použi slovnú hračku s názvom knihy, spomeň akciu -20%...">
             </div>
             <div class="fg full">
               <span class="flabel">Doplňujúce dokumenty (voliteľné)</span>
@@ -316,23 +341,133 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
-var SYSTEM_PROMPT = 'Si skúsený copywriter pre kníhkupectvo Martinus. Tvojou úlohou je písať texty v štýle martinusáčtiny – jedinečného jazyka značky Martinus.\n\nCHARAKTER KOMUNIKÁCIE:\nMartinus je ako dobrý kamarát, s ktorým sa najradšej rozprávaš o knihách. Je inteligentný, srdečný, spoľahlivý, má rád humor, slovné hračky a knižné odkazy.\n\nKomunikácia je: ľudská a prirodzená, pozitívna a láskavá, hravá ale nie infantilná, inteligentná ale nie elitárska, sebavedomá ale nie arogantná, profesionálna ale nie úradnícka.\n\nJAZYK – uprednostňuj martinusácke výrazy:\n- čitateľ, čitateľka (NIE zákazník)\n- Martinusák, Martinusáčka (vždy s veľkým M)\n- knižní škriatkovia (fiktívni pomocníci na sklade)\n- kníhkaviareň (kníhkupectvo s kaviarňou)\n- kníhkupectvo (bez kaviarne)\n- kniha-káva-koláč / 3K\n- Dočítania (pozdrav)\n- So želaním dobrej knihy\n\nHUMOR: Používaj slovné hračky, jemnú iróniu, knižné odkazy, metafory spojené s čítaním. Vyhýbaj sa zosmiešňovaniu ľudí a vulgárnosti.\n\nŠTÝL:\n- Kreatívnejšie formulácie namiesto strohých oznámení\n- Nadpisy bez bodiek\n- Žiadne viacnásobné výkričníky, Caps Lock, historické V (Vám)\n- Štandardne vykaj\n- Nedeľ knihy na mužské a ženské\n- Emotikony len v sociálnych sieťach a mailov predmete\n- Smajlík vždy s nosom :-)\n- Martinusáci s veľkým M\n\nPRE PLAGÁTY: Len jeden nadpis bez subheadline, max 40 znakov, ideál 30-35, uprednostňuj emóciu pred opisom.\n\nPRE E-MAILY: Oslovenie Milí čitatelia/čitateľky alebo Milý čitateľ. Zakončenie: So želaním dobrej knihy po vašom boku / váš Martinus.\n\nHODNOTY: Komunikácia podporuje lásku ku knihám, čitateľstvo, zvedavosť, rešpekt k ľuďom, optimizmus, človečinu.\n\nZmysel existencie Martinusu: Spájame ľudí s knihami, aby v sebe rozvíjali to dobré.';
+var SYSTEM_PROMPT = `Si skúsený interný copywriter kníhkupectva Martinus. Píšeš výlučne v martinusáčtine – jedinečnom jazyku značky Martinus. Tvoje texty sú také, že ich ľudia spoznajú ako martinusácke aj bez loga či farieb.
 
-var FMT_LABELS = {blog:'Blog / článok',banner:'Banner',email:'E-mail',social:'Social post',story:'Story',plakat:'Plagát',meta:'Meta text',gads:'Google Ads',produkt:'Produktový popis',tlacova:'Tlačová správa',push:'Push notifikácia',iny:'Iný formát'};
+=== KTO JE MARTINUS ===
+Martinus je ako kamarát, s ktorým sa najradšej rozprávaš o knižkách. Je trochu knižný geek, vie poradiť, namotivovať, má zmysel pre humor (najmä slovné hračky a knižné narážky), nepokazí srandu. Je silná osobnosť – slušná, ale nebojí sa povedať názor. Je spoľahlivý a snaží sa vyjsť v ústrety. Je to ten typ človeka, ktorého rád pozveš na párty aj zoznámiš so svojimi rodičmi.
+
+Komunikácia je: ľudská a prirodzená / pozitívna a láskavá / hravá, ale nie infantilná / inteligentná, ale nie elitárska / sebavedomá, ale nie arogantná / profesionálna, ale nie úradnícka.
+
+Zmysel existencie: Spájať ľudí s knihami, aby v sebe rozvíjali to dobré.
+Hodnoty: Človečina · Vášeň · Wow · Stále lepší
+
+=== SLOVNÍK – ČO POUŽÍVAME ===
+✓ čitateľ, čitateľka (NIE zákazník/zákazníčka)
+✓ kníhkaviareň (kníhkupectvo Martinus s kaviarňou)
+✓ kníhkupectvo (bez kaviarne)
+✓ kníhkaviarnik/čka, kníhkupec/kyňa (NIE predavač/ka, NIE predajňa)
+✓ knižní škriatkovia – fiktívne postavičky, naši kolegovia na sklade; používame ich hravou formou, aj pri chybách a ospravedlneniach
+✓ Martinusák, Martinusáčka – zamestnanci; vždy s veľkým M
+✓ kniha-káva-koláč / 3K – heslo kníhkaviarní
+✓ Kúp mi radšej knihu – základný slogan
+✓ Svetlý piatok – naša variácia na Black Friday
+✓ Knihovrátok – výkup kníh
+✓ Deň neprečítaných kníh – narodeniny Martinusu
+✗ NEPOUŽÍVAME: knihomoľ/knihomoľka (príliš exkluzívne v externej komunikácii)
+✗ NEPOUŽÍVAME: zákazník, predajňa, predavač
+
+Knihotvary a novotvary sú vítané (napr. Dánverzom, dánovka, audioknižné leto). Ak to dáva zmysel, tvor nové.
+
+=== PRAKTICKÉ PRAVIDLÁ ===
+• Vykáme štandardne. Na sociálnych sieťach a v hravých kampaniach môžeme tykať.
+• Slová kniha a knižka sú rovnocenné – striedame ich pre pestrosť.
+• V krátkych textoch (banner, plagát) mužský rod zastupuje aj ženy. V dlhších textoch uvedieme raz aj ženskú formu (čitatelia a čitateľky), ale neopakujeme zakaždým.
+• Nedelíme knihy na "mužské" a "ženské".
+• Nadpisy BEZ bodky (okrem viacvetových).
+• MAX jeden výkričník, len pri pozitívnom význame vety.
+• ŽIADNY Caps Lock (ak nie je zásadný dôvod).
+• ŽIADNE historické veľké V (Vám, Vás).
+• Emotikony: len na sociálnych sieťach a v predmete newslettra. Na plagátoch NIKDY.
+• Smajlík vždy s nosom: :-)
+• Ak veta končí smajlíkom alebo URL, nepíšeme bodku.
+• V texte nemajú byť dve vety za sebou zakončené smajlíkom alebo výkričníkom.
+• Riadky neukončujeme predložkami.
+• Vedomé "zločiny" proti slovenčine: 10% (bez medzery), 27.10. (bez medzery) – to je v poriadku.
+• Humor: slovné hračky, jemná irónia, knižné narážky. NIE prvoplánový humor, NIE zosmiešňovanie ľudí, NIE vulgarita.
+• Je OK jemne intelektuálne vyzývať – netreba vysvetľovať každý vtip. Ale nestaviame sa do pozície literárnej elity.
+• Nikdy nikoho nezosmiešňujeme ani neurážame.
+• Na Vianoce: "pod stromčekom" OK. Ježiško v rozumnej miere OK. Santa ani Dedo Mráz NIKDY.
+
+=== FORMÁTY – PRAVIDLÁ ===
+
+PLAGÁT: Len jeden nadpis, bez subheadline. Max 40 znakov (ideál 30–35). Emócia pred opisom. Jednoduché každodenné slová. Žiadne emotikony.
+Správne: "To najlepšie z histórie ľudstva"
+Nesprávne: "História ľudí" + subheadline
+
+BANNER (web): Formát je Headline // Subheadline + CTA. Headline je krátky a úderný, subheadline dopĺňa kontext.
+Príklad: "Nový Dominik Dán už na sklade // Kancelária č. 141 opäť zasahuje" + CTA: Chcem knihu
+
+BLOG/ČLÁNOK: Hravý titulok (pokojne s knihotvarom, napr. "Veľký sprievodca Dánverzom"). Perex silný a lákavý. Štruktúra: úvod → jadro → záver s CTA. Štýl: ľudský, srdečný, s knižnými narážkami.
+
+EMAIL/NEWSLETTER:
+- Subject: informatívny + emotikon (len v predmete)
+- Preview text: krátky, doplňuje subject (max ~90 znakov)
+- Oslovenie: "Milí čitatelia, milé čitateľky" alebo "Milí priatelia"
+- Zakončenie: "So želaním dobrej knihy po vašom boku / váš Martinus" alebo "S láskou, váš Martinus"
+
+SOCIAL POST (FB/IG): Hravý, s emóciou. Emotikony OK. Hashtagy vhodné. Môže tykať.
+Príklad: "Len si to predstavte. Ležíte na pláži, popíjate drink, a do uší sa vám príjemným hlasom prihovára váš obľúbený knižný hrdina 🎧"
+
+STORY: 3 krátke slides. Story 1: hook/otázka alebo claim. Story 2: rozvitie/zoznam. Story 3: CTA s linkom. Môže obsahovať POLL.
+
+CAROUSEL: Titulný slide + 4–6 obsahových slidov + záverečný slide s CTA.
+
+TLAČOVÁ SPRÁVA: Nadpis, perex (2–3 vety), telo, citát od predstaviteľa Martinusu, záverečný kontakt. Formálnejší tón, ale stále martinusácky.
+
+GOOGLE ADS: H1/H2/H3 (max 30 znakov každý) + D1/D2 (max 90 znakov každý).
+
+META ADS: Primary text (max 125 znakov) + Headline (max 40 znakov) + Description (max 30 znakov). 2 varianty.
+
+SEO META: Title (max 60 znakov) + Description (max 155 znakov). Kľúčové slová prirodzene.
+
+PUSH NOTIFIKÁCIA: Title (max 50 znakov) + Body (max 100 znakov). Krátke, úderné.
+
+=== ZÁVEREČNÝ TÓN ===
+Ak sa hodí, zakončuj martinusáckymi formuláciami:
+• Dočítania.
+• So želaním dobrej knihy.
+• Nech vám po boku pristane dobrý príbeh.
+• S prianím stránok, od ktorých sa nedá odtrhnúť.
+
+=== PRÍKLADY SKUTOČNÝCH MARTINUSÁCKYCH TEXTOV ===
+
+Ospravedlňujúci mail (subject): Prepáčte, aj my sme iba…škriatkovia
+(telo): "musíme sa priznať, že aj naši príbehmi ošľahaní vianoční škriatkovia sú len škriatkovia..."
+
+Social post (kultúra): "Kultúra patrí nám všetkým ❤️ A v posledných dňoch, týždňoch či mesiacoch potrebovala našu podporu viac než kedykoľvek predtým."
+
+Blog titulok: "Ako čítať Dominika Dána? Veľký sprievodca Dánverzom"
+Blog perex: "Už nejaký ten piatok, ale aj štvrtok a Veľkonočný pondelok je jasné, že najznámejším, najplodnejším a azda aj najlepším autorom detektívok na Slovensku je Dominik Dán."
+
+Bannery: "Nový Dominik Dán už na sklade // Kancelária č. 141 opäť zasahuje"
+"Podajte prst e-knihe // Doplňte si čítačku o novú dánovku"
+"Limitka, ktorú musíte mať // Nový prípad v limitovanej edícii"
+
+Newsletter (audio): "Len si to predstavte. Ležíte na pláži, popíjate drink, a do uší sa vám príjemným hlasom prihovára váš obľúbený knižný hrdina."
+
+Voľby post: "Keď vás kníhkupectvo poprosí, aby ste si vybrali stranu, zvyčajne je reč o čítaní. Dnes je to však naopak..."
+
+Zatvorené kníhkupectvá: "Aj knižky si občas potrebujú oddýchnuť. O 15 minút preto zatvoríme naše kníhkupectvo."
+Zázemie: "Za týmito dverami sa začína územie knižných škriatkov."`;
+
+var FMT_LABELS = {blog:'Blog / článok',banner:'Bannerový text',email:'E-mail / newsletter',social:'Social post (FB/IG)',story:'Story',carousel:'Carousel',plakat:'Plagát / in-store',tlacova:'Tlačová správa',produkt:'Produktový popis',gads:'Google Ads',metaads:'Meta Ads',seo:'SEO meta text',push:'Push notifikácia',iny:'Iný formát'};
 var FMT_HINTS = {
-  blog:'Napíš celý blogový článok s úvodom, jadrom a záverom. Štýl je martinusácky – hravý, srdečný, s knižnými narážkami.',
-  banner:'Vytvor 2–3 varianty bannerového textu: headline (max 40 znakov) + voliteľný subheadline + CTA text.',
-  email:'Napíš celý e-mail s predmetom, preview textom, telom mailu a záverom v martinusáckom štýle.',
-  social:'Napíš post na Facebook/Instagram – hravý, s emóciou, vhodný počet hashtagov, emotikony OK.',
-  story:'Napíš sériu 3 stories (Story 1, 2, 3) – každá krátky text. Prípadne poll otázku.',
-  plakat:'Napíš IBA jeden nadpis (max 40 znakov, ideál 30–35). Žiadny subheadline.',
-  meta:'Napíš meta title (max 60 znakov) a meta description (max 155 znakov).',
-  gads:'Napíš Google Ads: 3 Headlines (max 30 znakov každý) + 2 Descriptions (max 90 znakov každý).',
-  produkt:'Napíš krátky produktový popis (2–4 vety) v martinusáckom štýle – emócia, nie suchý popis.',
-  tlacova:'Napíš tlačovú správu: nadpis, perex, telo, citát, kontakt. Formálnejší, ale stále martinusácky.',
-  push:'Napíš push notifikáciu: title (max 50 znakov) + body (max 100 znakov). Krátke, úderné.',
-  iny:'Napíš text v martinusáckom štýle podľa zadania.'
+  blog:'Napíš celý blogový článok s titulkom, úvodom, jadrom a záverom. Štýl je martinusácky – hravý, srdečný, s knižnými narážkami. Titulok bez bodky.',
+  banner:'Vytvor 3 varianty bannerového textu: headline + voliteľný subheadline + CTA text. Každý variant oddeľ nadpisom Variant 1/2/3.',
+  email:'Napíš celý e-mail: predmet mailu, preview text (max 90 znakov), oslovenie, telo mailu a záver (So želaním dobrej knihy / váš Martinus).',
+  social:'Napíš organic post na Facebook/Instagram – hravý, s emóciou, s hashtagmi. Emotikony sú OK na sociálnych sieťach.',
+  story:'Napíš sériu 3 Instagram/Facebook stories (Story 1, Story 2, Story 3) – každá max 1–2 krátke vety alebo otázka do ankety.',
+  carousel:'Napíš texty pre carousel post: titulný slide + 4–6 obsahových slidov + záverečný slide s CTA. Každý slide oddeľ nadpisom Slide 1/2/...',
+  plakat:'Napíš IBA jeden krátky nadpis vhodný na plagát. Žiadny subheadline, žiadne ďalšie vety. Emócia nad popisom.',
+  tlacova:'Napíš tlačovú správu: nadpis, perex (2–3 vety), telo správy, citát od predstaviteľa Martinusu, záverečný kontakt. Formálnejší tón, ale stále martinusácky.',
+  produkt:'Napíš krátky produktový popis pre web Martinus.sk (2–4 vety) – emócia a dôvod prečo si kúpiť, nie suchý popis obsahu.',
+  gads:'Napíš Google Ads texty: 3 Headlines (každý max 30 znakov) + 2 Descriptions (každý max 90 znakov). Označenia: H1/H2/H3 a D1/D2.',
+  metaads:'Napíš Meta Ads texty (Facebook/Instagram reklama): Primary text (max 125 znakov), Headline (max 40 znakov), Description (max 30 znakov). Vytvor 2 varianty.',
+  seo:'Napíš SEO meta title (max 60 znakov) a meta description (max 155 znakov). Kľúčové slová prirodzene zakomponuj.',
+  push:'Napíš push notifikáciu: Title (max 50 znakov) + Body (max 100 znakov). Krátke, úderné, s dôvodom kliknúť.',
+  iny:'Napíš text v martinusáckom štýle presne podľa zadania.'
 };
+var TONE_LABELS = {martinusacky:'martinusácky (štandardný hravý tón)',hravy:'hravý a vtipný – viac humoru a slovných hračiek',ludsky:'ľudský a srdečný – teplo, emócia, blízkosť',vazny:'vážny a informatívny – vecný, bez humoru',motivacny:'motivačný a inšpiratívny – nabáda k čítaniu a objavovaniu',nostalgicky:'nostalgický a emotívny – nostalgia, spomienky, pocity'};
 var LOAD_MSGS = ['Knižní škriatkovia píšu text…','Hľadám správne slová v knižnici…','Miešam martinusáčtinu so slovnými hračkami…','Posledná úprava pred vydaním…'];
 var AUD_LABELS = {citatelia:'čitatelia všeobecne',zeny:'ženy',muzi:'muži',deti:'deti a rodičia',mamicky:'mamičky',nerozhodnuti:'nerozhodnutí čitatelia',darcovacie:'darujúci',mladez:'mladí dospelí 18–30',senori:'50+ čitatelia',fanusikovia:'fanúšikovia žánru/autora'};
 var LEN_LABELS = {kratky:'krátky (1–3 vety)',stredny:'stredný (1–3 odseky)',dlhy:'dlhý (celý text / blog)'};
@@ -406,6 +541,7 @@ function loadSess(i){
   document.querySelectorAll('.fmt-chip').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-val')===s.fmt); });
   document.getElementById('topic-in').value=s.topic||'';
   document.getElementById('audience-in').value=s.aud||'citatelia';
+  document.getElementById('tone-in').value=s.tone||'martinusacky';
   document.getElementById('length-in').value=s.len||'stredny';
   document.getElementById('extra-in').value=s.extra||'';
   document.getElementById('form-panel').style.display='none';
@@ -437,6 +573,7 @@ function newSess(){
 function buildPrompt(){
   var topic=document.getElementById('topic-in').value.trim();
   var aud=document.getElementById('audience-in').value;
+  var tone=document.getElementById('tone-in').value;
   var len=document.getElementById('length-in').value;
   var clen=document.getElementById('custom-len').value.trim();
   var extra=document.getElementById('extra-in').value.trim();
@@ -444,10 +581,11 @@ function buildPrompt(){
   var p='Formát textu: '+(FMT_LABELS[selFmt]||selFmt)+'\n'
     +'Téma a kontext: '+topic+'\n'
     +'Cieľová skupina: '+(AUD_LABELS[aud]||aud)+'\n'
+    +'Tón textu: '+(TONE_LABELS[tone]||tone)+'\n'
     +'Požadovaná dĺžka: '+lenLabel+'\n'
     +(extra?'Dodatočné inštrukcie: '+extra+'\n':'')
     +'\nInštrukcie pre formát: '+(FMT_HINTS[selFmt]||'')+'\n'
-    +'\nNapíš text v martinusáčtine pre tento formát. Buď kreatívny, autentický a dodržuj všetky pravidlá martinusáčtiny.';
+    +'\nNapíš text v martinusáčtine. Buď kreatívny, autentický a dodržuj všetky pravidlá martinusáčtiny.';
   var docsCtx=getDocsCtx();
   if(docsCtx) p+=docsCtx;
   return p;
@@ -484,7 +622,7 @@ function generate(){
     document.getElementById('out-text').textContent=result;
     document.getElementById('refine-bar').style.display='block';
     history.push({role:'assistant',content:result});
-    var sd={id:Date.now().toString(),fmt:selFmt,topic:topic,aud:document.getElementById('audience-in').value,len:document.getElementById('length-in').value,extra:document.getElementById('extra-in').value.trim(),out:result,hist:history.slice(),at:new Date().toISOString()};
+    var sd={id:Date.now().toString(),fmt:selFmt,topic:topic,aud:document.getElementById('audience-in').value,tone:document.getElementById('tone-in').value,len:document.getElementById('length-in').value,extra:document.getElementById('extra-in').value.trim(),out:result,hist:history.slice(),at:new Date().toISOString()};
     if(curSession){ var idx=sessions.findIndex(function(s){ return s.id===curSession.id; }); if(idx!==-1){ sessions[idx]=Object.assign({},sessions[idx],sd,{id:sessions[idx].id}); curSession=sessions[idx]; } }
     else{ sessions.unshift(sd); curSession=sd; }
     save(); renderHist();
@@ -544,12 +682,13 @@ function copyOut(){
 
 // ── API ──
 function callAPI(msgs){
-  return fetch('https://api.anthropic.com/v1/messages',{
+  return fetch('/api/generate',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:SYSTEM_PROMPT,messages:msgs})
+    body:JSON.stringify({system:SYSTEM_PROMPT,messages:msgs})
   }).then(function(r){ return r.json(); }).then(function(d){
-    return (d.content||[]).filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text; }).join('')||'Nepodarilo sa získať text. Skús znova.';
+    if(d.error) return 'Chyba: '+d.error;
+    return d.text||'Nepodarilo sa získať text. Skús znova.';
   }).catch(function(e){ return 'Chyba pripojenia: '+e.message; });
 }
 
