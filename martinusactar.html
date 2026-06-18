@@ -112,6 +112,12 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
 .btn-generate:hover{opacity:.9}
 .btn-generate:disabled{opacity:.5;cursor:not-allowed}
 
+/* VARIANT TABS */
+.var-tabs{display:flex;gap:6px;padding:1rem 1.5rem .75rem;border-bottom:1px solid var(--bdr);background:var(--surf2)}
+.var-tab{padding:6px 16px;border:1.5px solid var(--bdr2);border-radius:20px;font-size:12px;font-weight:500;color:var(--ink3);background:var(--surf);cursor:pointer;transition:all .15s;font-family:inherit}
+.var-tab:hover{border-color:var(--brand);color:var(--brand)}
+.var-tab.active{border-color:var(--brand);background:var(--brand);color:#fff}
+
 /* OUTPUT */
 .out-panel{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);max-width:760px;margin:0 auto;box-shadow:var(--sh);overflow:hidden;display:none}
 .out-head{padding:1rem 1.5rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;background:var(--surf2)}
@@ -253,6 +259,11 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
               <button class="btn-act" id="btn-regen">↺ Regenerovať</button>
               <button class="btn-act" id="btn-edit">✎ Upraviť zadanie</button>
             </div>
+          </div>
+          <div class="var-tabs" id="var-tabs" style="display:none">
+            <button class="var-tab active" data-v="0">Variant 1</button>
+            <button class="var-tab" data-v="1">Variant 2</button>
+            <button class="var-tab" data-v="2">Variant 3</button>
           </div>
           <div class="out-body" id="out-body">
             <div class="loading" id="loading">
@@ -607,12 +618,41 @@ function generate(){
   document.getElementById('out-topic').textContent=topic.slice(0,60);
   var mi=0;
   var iv=setInterval(function(){ mi=(mi+1)%LOAD_MSGS.length; var e=document.getElementById('load-msg'); if(e) e.textContent=LOAD_MSGS[mi]; },1800);
+  var variants=[];
+  var activeVar=0;
+
+  function parseVariants(raw){
+    var parts=raw.split(/---VARIANT\s*\d+---/i).map(function(s){ return s.trim(); }).filter(function(s){ return s.length>0; });
+    return parts.length>=2?parts:[raw];
+  }
+
+  function showVariant(idx){
+    activeVar=idx;
+    document.getElementById('out-text').textContent=variants[idx]||'';
+    document.querySelectorAll('.var-tab').forEach(function(t){ t.classList.toggle('active', parseInt(t.getAttribute('data-v'))===idx); });
+  }
+
+  function renderVariantTabs(){
+    var tabs=document.getElementById('var-tabs');
+    if(variants.length>1){
+      tabs.style.display='flex';
+      document.querySelectorAll('.var-tab').forEach(function(t,i){
+        t.style.display=i<variants.length?'':'none';
+      });
+    } else {
+      tabs.style.display='none';
+    }
+  }
+
   history=[{role:'user',content:buildPrompt()}];
   callAPI(history).then(function(result){
     clearInterval(iv);
+    variants=parseVariants(result);
+    activeVar=0;
+    renderVariantTabs();
     document.getElementById('loading').style.display='none';
     document.getElementById('out-text').style.display='block';
-    document.getElementById('out-text').textContent=result;
+    showVariant(0);
     document.getElementById('refine-bar').style.display='block';
     history.push({role:'assistant',content:result});
     var sd={id:Date.now().toString(),fmt:selFmt,topic:topic,out:result,hist:history.slice(),at:new Date().toISOString()};
@@ -622,6 +662,10 @@ function generate(){
     busy=false; document.getElementById('btn-generate').disabled=false;
     document.getElementById('scroll').scrollTo(0,9999);
   });
+
+  document.querySelectorAll('.var-tab').forEach(function(tab){
+    tab.addEventListener('click',function(){ showVariant(parseInt(tab.getAttribute('data-v'))); });
+  });
 }
 
 function refine(){
@@ -629,11 +673,13 @@ function refine(){
   var txt=document.getElementById('refine-in').value.trim();
   if(!txt) return;
   busy=true; document.getElementById('btn-refine').disabled=true;
-  history.push({role:'user',content:txt});
+  var activeText=document.getElementById('out-text').textContent;
+  history.push({role:'user',content:'Pracuj s týmto variantom textu:\n\n'+activeText+'\n\nÚprava: '+txt});
   document.getElementById('refine-in').value='';
   callAPI(history).then(function(result){
     document.getElementById('out-text').textContent=result;
     history.push({role:'assistant',content:result});
+    document.getElementById('var-tabs').style.display='none';
     if(curSession){ var idx=sessions.findIndex(function(s){ return s.id===curSession.id; }); if(idx!==-1){ sessions[idx].out=result; sessions[idx].hist=history.slice(); curSession=sessions[idx]; save(); } }
     busy=false; document.getElementById('btn-refine').disabled=false;
     document.getElementById('scroll').scrollTo(0,9999);
