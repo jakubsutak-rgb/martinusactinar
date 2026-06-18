@@ -497,6 +497,8 @@ var curSession = null;
 var history = [];
 var busy = false;
 var docs = [];
+var variants = [];
+var activeVar = 0;
 var curEmail = '';
 
 // ── HELPERS ──
@@ -603,6 +605,29 @@ function getDocsCtx(){
 }
 
 // ── GENERATE ──
+function parseVariants(raw){
+  var parts=raw.split(/---VARIANT\s*\d+---/i).map(function(s){ return s.trim(); }).filter(function(s){ return s.length>0; });
+  return parts.length>=2?parts:[raw];
+}
+
+function showVariant(idx){
+  activeVar=idx;
+  document.getElementById('out-text').textContent=variants[idx]||'';
+  document.querySelectorAll('.var-tab').forEach(function(t){ t.classList.toggle('active', parseInt(t.getAttribute('data-v'))===idx); });
+}
+
+function renderVariantTabs(){
+  var tabs=document.getElementById('var-tabs');
+  if(variants.length>1){
+    tabs.style.display='flex';
+    document.querySelectorAll('.var-tab').forEach(function(t,i){
+      t.style.display=i<variants.length?'':'none';
+    });
+  } else {
+    tabs.style.display='none';
+  }
+}
+
 function generate(){
   if(busy) return;
   var topic=document.getElementById('topic-in').value.trim();
@@ -618,32 +643,6 @@ function generate(){
   document.getElementById('out-topic').textContent=topic.slice(0,60);
   var mi=0;
   var iv=setInterval(function(){ mi=(mi+1)%LOAD_MSGS.length; var e=document.getElementById('load-msg'); if(e) e.textContent=LOAD_MSGS[mi]; },1800);
-  var variants=[];
-  var activeVar=0;
-
-  function parseVariants(raw){
-    var parts=raw.split(/---VARIANT\s*\d+---/i).map(function(s){ return s.trim(); }).filter(function(s){ return s.length>0; });
-    return parts.length>=2?parts:[raw];
-  }
-
-  function showVariant(idx){
-    activeVar=idx;
-    document.getElementById('out-text').textContent=variants[idx]||'';
-    document.querySelectorAll('.var-tab').forEach(function(t){ t.classList.toggle('active', parseInt(t.getAttribute('data-v'))===idx); });
-  }
-
-  function renderVariantTabs(){
-    var tabs=document.getElementById('var-tabs');
-    if(variants.length>1){
-      tabs.style.display='flex';
-      document.querySelectorAll('.var-tab').forEach(function(t,i){
-        t.style.display=i<variants.length?'':'none';
-      });
-    } else {
-      tabs.style.display='none';
-    }
-  }
-
   history=[{role:'user',content:buildPrompt()}];
   callAPI(history).then(function(result){
     clearInterval(iv);
@@ -663,9 +662,6 @@ function generate(){
     document.getElementById('scroll').scrollTo(0,9999);
   });
 
-  document.querySelectorAll('.var-tab').forEach(function(tab){
-    tab.addEventListener('click',function(){ showVariant(parseInt(tab.getAttribute('data-v'))); });
-  });
 }
 
 function refine(){
@@ -688,17 +684,20 @@ function refine(){
 
 function regen(){
   if(busy) return;
-  history=history.length?[history[0]]:[];
-  if(!history.length){ history=[{role:'user',content:buildPrompt()}]; }
-  history.push({role:'user',content:'Vytvor nový variant tohto textu – iný prístup, iná slovná hračka alebo štruktúra, ale rovnaká téma a martinusácky štýl.'});
+  history=[{role:'user',content:buildPrompt()}];
+  history.push({role:'user',content:'Vygeneruj úplne novú sériu 3 variantov. Každý musí mať iný prístup, uhol pohľadu alebo slovnú hračku. Rovnaká téma, rovnaký martinusácky štýl.'});
   busy=true;
+  document.getElementById('var-tabs').style.display='none';
   document.getElementById('loading').style.display='flex';
   document.getElementById('out-text').style.display='none';
   document.getElementById('refine-bar').style.display='none';
   callAPI(history).then(function(result){
+    variants=parseVariants(result);
+    activeVar=0;
+    renderVariantTabs();
     document.getElementById('loading').style.display='none';
     document.getElementById('out-text').style.display='block';
-    document.getElementById('out-text').textContent=result;
+    showVariant(0);
     document.getElementById('refine-bar').style.display='block';
     history.push({role:'assistant',content:result});
     if(curSession){ var idx=sessions.findIndex(function(s){ return s.id===curSession.id; }); if(idx!==-1){ sessions[idx].out=result; sessions[idx].hist=history.slice(); curSession=sessions[idx]; save(); } }
@@ -804,6 +803,9 @@ document.getElementById('btn-copy').addEventListener('click', copyOut);
 document.getElementById('btn-regen').addEventListener('click', regen);
 document.getElementById('btn-edit').addEventListener('click', editForm);
 document.getElementById('refine-in').addEventListener('keydown', function(e){ if(e.key==='Enter') refine(); });
+document.querySelectorAll('.var-tab').forEach(function(tab){
+  tab.addEventListener('click',function(){ showVariant(parseInt(tab.getAttribute('data-v'))); });
+});
 
 
 document.getElementById('btn-browse').addEventListener('click', function(e){ e.stopPropagation(); document.getElementById('file-in').click(); });
