@@ -216,7 +216,6 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
               <div class="fmt-chip" data-val="carousel"><span class="chip-ico">🎠</span><span class="chip-lbl">Carousel</span></div>
               <div class="fmt-chip" data-val="plakat"><span class="chip-ico">🗒️</span><span class="chip-lbl">Plagát / in-store</span></div>
               <div class="fmt-chip" data-val="tlacova"><span class="chip-ico">📰</span><span class="chip-lbl">Tlačová správa</span></div>
-              <div class="fmt-chip" data-val="produkt"><span class="chip-ico">📖</span><span class="chip-lbl">Produktový popis</span></div>
               <div class="fmt-chip" data-val="gads"><span class="chip-ico">📢</span><span class="chip-lbl">Google Ads</span></div>
               <div class="fmt-chip" data-val="metaads"><span class="chip-ico">🎯</span><span class="chip-lbl">Meta Ads</span></div>
               <div class="fmt-chip" data-val="seo"><span class="chip-ico">🔍</span><span class="chip-lbl">SEO meta text</span></div>
@@ -227,51 +226,8 @@ html,body{height:100%;font-family:'DM Sans',system-ui,sans-serif;background:var(
 
           <div class="form-grid">
             <div class="fg full">
-              <label class="flabel" for="topic-in">Téma a kontext kampane</label>
-              <textarea class="fctl" id="topic-in" rows="3" placeholder="Napr.: Nový Dominik Dán – Podaj prst. Slávime 20 rokov autora, je to 40. kniha, máme špeciálnu limitovanú edíciu..."></textarea>
-            </div>
-            <div class="fg">
-              <label class="flabel" for="audience-in">Cieľová skupina</label>
-              <select class="fctl" id="audience-in">
-                <option value="citatelia">Čitatelia všeobecne</option>
-                <option value="zeny">Ženy</option>
-                <option value="muzi">Muži</option>
-                <option value="deti">Deti a rodičia</option>
-                <option value="mamicky">Mamičky</option>
-                <option value="nerozhodnuti">Nerozhodnutí čitatelia</option>
-                <option value="darcovacie">Darujúci (kto hľadá darček)</option>
-                <option value="mladez">Mladí dospelí 18–30</option>
-                <option value="senori">50+ čitatelia</option>
-                <option value="fanusikovia">Fanúšikovia žánru/autora</option>
-              </select>
-            </div>
-            <div class="fg">
-              <label class="flabel" for="tone-in">Tón textu</label>
-              <select class="fctl" id="tone-in">
-                <option value="martinusacky">Martinusácky (štandardný)</option>
-                <option value="hravy">Hravý a vtipný</option>
-                <option value="ludsky">Ľudský a srdečný</option>
-                <option value="vazny">Vážny a informatívny</option>
-                <option value="motivacny">Motivačný a inšpiratívny</option>
-                <option value="nostalgicky">Nostalgický a emotívny</option>
-              </select>
-            </div>
-            <div class="fg">
-              <label class="flabel" for="length-in">Dĺžka textu</label>
-              <select class="fctl" id="length-in">
-                <option value="kratky">Krátky (1–3 vety)</option>
-                <option value="stredny" selected>Stredný (1–3 odseky)</option>
-                <option value="dlhy">Dlhý (celý text / blog)</option>
-                <option value="vlastna">Zadám počet znakov…</option>
-              </select>
-            </div>
-            <div class="fg" id="custom-len-grp" style="display:none">
-              <label class="flabel" for="custom-len">Počet znakov / slov</label>
-              <input class="fctl" type="text" id="custom-len" placeholder="Napr.: max 150 znakov, alebo cca 300 slov">
-            </div>
-            <div class="fg full">
-              <label class="flabel" for="extra-in">Dodatočné inštrukcie (voliteľné)</label>
-              <input class="fctl" type="text" id="extra-in" placeholder="Napr.: Pridaj CTA, použi slovnú hračku s názvom knihy, spomeň akciu -20%...">
+              <label class="flabel" for="topic-in">Zadanie</label>
+              <textarea class="fctl" id="topic-in" rows="6" placeholder="Opíš kampaň, ciele, cieľovú skupinu a čo chceš dosiahnuť. Sem vlož zadanie z Wrike alebo akýkoľvek kontext, ktorý ti pomôže."></textarea>
             </div>
             <div class="fg full">
               <span class="flabel">Doplňujúce dokumenty (voliteľné)</span>
@@ -599,10 +555,6 @@ function loadSess(i){
   var s=sessions[i]; curSession=s; history=s.hist?s.hist.slice():[]; selFmt=s.fmt;
   document.querySelectorAll('.fmt-chip').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-val')===s.fmt); });
   document.getElementById('topic-in').value=s.topic||'';
-  document.getElementById('audience-in').value=s.aud||'citatelia';
-  document.getElementById('tone-in').value=s.tone||'martinusacky';
-  document.getElementById('length-in').value=s.len||'stredny';
-  document.getElementById('extra-in').value=s.extra||'';
   document.getElementById('form-panel').style.display='none';
   document.getElementById('out-panel').style.display='block';
   document.getElementById('out-badge').textContent=FMT_LABELS[s.fmt]||s.fmt;
@@ -620,7 +572,6 @@ function newSess(){
   selFmt='blog';
   document.querySelectorAll('.fmt-chip').forEach(function(c){ c.classList.toggle('sel', c.getAttribute('data-val')==='blog'); });
   document.getElementById('topic-in').value='';
-  document.getElementById('extra-in').value='';
   document.getElementById('out-panel').style.display='none';
   document.getElementById('form-panel').style.display='block';
   renderFileList();
@@ -631,18 +582,8 @@ function newSess(){
 // ── PROMPTS ──
 function buildPrompt(){
   var topic=document.getElementById('topic-in').value.trim();
-  var aud=document.getElementById('audience-in').value;
-  var tone=document.getElementById('tone-in').value;
-  var len=document.getElementById('length-in').value;
-  var clen=document.getElementById('custom-len').value.trim();
-  var extra=document.getElementById('extra-in').value.trim();
-  var lenLabel=len==='vlastna'?(clen||'vlastná dĺžka'):(LEN_LABELS[len]||len);
   var p='Formát textu: '+(FMT_LABELS[selFmt]||selFmt)+'\n'
-    +'Téma a kontext: '+topic+'\n'
-    +'Cieľová skupina: '+(AUD_LABELS[aud]||aud)+'\n'
-    +'Tón textu: '+(TONE_LABELS[tone]||tone)+'\n'
-    +'Požadovaná dĺžka: '+lenLabel+'\n'
-    +(extra?'Dodatočné inštrukcie: '+extra+'\n':'')
+    +'Zadanie: '+topic+'\n'
     +'\nInštrukcie pre formát: '+(FMT_HINTS[selFmt]||'')+'\n'
     +'\nNapíš text v martinusáčtine. Buď kreatívny, autentický a dodržuj všetky pravidlá martinusáčtiny.';
   var docsCtx=getDocsCtx();
@@ -681,7 +622,7 @@ function generate(){
     document.getElementById('out-text').textContent=result;
     document.getElementById('refine-bar').style.display='block';
     history.push({role:'assistant',content:result});
-    var sd={id:Date.now().toString(),fmt:selFmt,topic:topic,aud:document.getElementById('audience-in').value,tone:document.getElementById('tone-in').value,len:document.getElementById('length-in').value,extra:document.getElementById('extra-in').value.trim(),out:result,hist:history.slice(),at:new Date().toISOString()};
+    var sd={id:Date.now().toString(),fmt:selFmt,topic:topic,out:result,hist:history.slice(),at:new Date().toISOString()};
     if(curSession){ var idx=sessions.findIndex(function(s){ return s.id===curSession.id; }); if(idx!==-1){ sessions[idx]=Object.assign({},sessions[idx],sd,{id:sessions[idx].id}); curSession=sessions[idx]; } }
     else{ sessions.unshift(sd); curSession=sd; }
     save(); renderHist();
@@ -824,7 +765,7 @@ document.getElementById('btn-copy').addEventListener('click', copyOut);
 document.getElementById('btn-regen').addEventListener('click', regen);
 document.getElementById('btn-edit').addEventListener('click', editForm);
 document.getElementById('refine-in').addEventListener('keydown', function(e){ if(e.key==='Enter') refine(); });
-document.getElementById('length-in').addEventListener('change', function(){ document.getElementById('custom-len-grp').style.display=this.value==='vlastna'?'block':'none'; });
+
 
 document.getElementById('btn-browse').addEventListener('click', function(e){ e.stopPropagation(); document.getElementById('file-in').click(); });
 document.getElementById('file-in').addEventListener('change', function(e){ processFiles(e.target.files); e.target.value=''; });
