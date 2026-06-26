@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'API kľúč nie je nastavený.' });
   }
@@ -63,21 +63,25 @@ export default async function handler(req, res) {
     }
   }
 
-  const enrichedSystem = (system || '') + urlContext;
+  const systemContent = (system || '') + urlContext;
+
+  // Build OpenAI messages format (system as first message)
+  const openaiMessages = [
+    { role: 'system', content: systemContent },
+    ...messages,
+  ];
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'gpt-4o',
         max_tokens: 2000,
-        system: enrichedSystem,
-        messages,
+        messages: openaiMessages,
       }),
     });
 
@@ -87,11 +91,7 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: data.error?.message || 'Chyba API.' });
     }
 
-    const text = (data.content || [])
-      .filter((b) => b.type === 'text')
-      .map((b) => b.text)
-      .join('');
-
+    const text = data.choices?.[0]?.message?.content || '';
     return res.status(200).json({ text });
   } catch (err) {
     return res.status(500).json({ error: 'Chyba spojenia: ' + err.message });
